@@ -23,9 +23,6 @@ class Actor:
         if hasattr(self, 'img'):
             location.blit(self.img,self.rect)
 
-    def collide_with(self,other_col):
-        print(other_col)
-
 class BasicWall(Actor):
     def __init__(self, x,y):
         super().__init__("brick.jpg", WALL)
@@ -41,6 +38,9 @@ class BasicPlayer(Actor):
 
     def turnRight(self):
         self.pos[0] += 5
+
+    def collide(self):
+        sys.exit(0)
 
 class Game:
     def __init__(self):
@@ -60,16 +60,17 @@ class Game:
 
         self.col_lists = {}
         for actor in actors:
+            if actor.tag == PLAYER:
+                self.player_actor = actor
             if actor.tag in self.col_lists:
-                self.col_lists[actor.tag].append(actor)
+                self.col_lists[actor.tag].append(actor.rect)
             else:
-                self.col_lists[actor.tag] = [actor]
+                self.col_lists[actor.tag] = [actor.rect]
 
     def detect_collisions(self):
         for player in self.col_lists[PLAYER]:
-            for wall in self.col_lists[WALL]:
-                if player.rect.colliderect(wall.rect):
-                    player.collide_with(wall)
+            if player.collidelist(self.col_lists[WALL]) != -1:
+                self.player_actor.collide()
 
     def run(self):
         while 1:
@@ -100,6 +101,6 @@ class Game:
 if __name__ == '__main__':
     game = Game()
     player = BasicPlayer()
-    wall = BasicWall(300,0)
+    wall = BasicWall(150,0)
     game.set_actors([wall, player])
     game.run()
