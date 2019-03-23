@@ -4,7 +4,6 @@ from pygame.locals import *
 PLAYER = 0
 WALL = 1
 
-
 class Actor:
     def __init__(self,filename, tag):
         self.tag = tag
@@ -61,6 +60,12 @@ class Game:
             else:
                 self.col_lists[actor.tag] = [actor]
 
+    def detect_collisions(self):
+        for player in self.col_lists[PLAYER]:
+            for wall in self.col_lists[WALL]:
+                if player.rect.colliderect(wall.rect):
+                    player.collide_with(wall)
+
     def run(self):
         while 1:
             for event in pygame.event.get():
@@ -79,6 +84,8 @@ class Game:
 
         for actor in self.actors:
             actor.act(delta)
+
+        self.detect_collisions()
 
         for actor in self.actors:
             actor.draw(self.screen)
