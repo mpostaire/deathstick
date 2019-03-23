@@ -4,6 +4,7 @@ from pygame.locals import *
 PLAYER = 0
 WALL = 1
 
+
 class Actor:
     def __init__(self,filename, tag):
         self.tag = tag
