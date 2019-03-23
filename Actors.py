@@ -2,7 +2,8 @@ import pygame
 from pygame.locals import *
 
 class Actor:
-    def __init__(self,filename):
+    def __init__(self,filename, tag):
+        self.tag = tag
         if filename:
             self.img = pygame.image.load(filename)
             self.rect = self.img.get_rect()
@@ -15,6 +16,12 @@ class Actor:
 
     def draw(self,location):
         location.blit(self.img,self.rect)
+
+    def get_tag(self):
+        return self.tag
+
+    def collide_with(self,other_col):
+        print(other_col)
 
 class Game:
     def __init__(self):
@@ -29,8 +36,15 @@ class Game:
     def set_actors(self,actors):
         self.actors = actors
 
+        self.col_lists = {}
+        for actor in actors:
+            if actor.get_tag() in self.col_lists:
+                self.col_lists[actor.get_tag()].append(actor)
+            else:
+                self.col_lists[actor.get_tag()] = [actor]
 
     def run(self):
+        print(self.col_lists)
         while 1:
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -51,6 +65,7 @@ class Game:
 
 
 game = Game()
-actor = Actor('intro_ball.gif')
-game.set_actors([actor])
+ball = Actor('intro_ball.gif', 'project')
+player = Actor('intro_ball.gif', 'player')
+game.set_actors([ball, player])
 game.run()
