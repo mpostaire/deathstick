@@ -33,11 +33,13 @@ class BasicWall(Actor):
 
 class BasicPlayer(Actor):
     def __init__(self):
-        super().__init__("intro_ball.gif", PLAYER)
+        super().__init__("cursor.png", PLAYER)
 
-    def act(self, delta):
-        self.pos[0] = self.pos[0] + delta*50/1000
-        self.rect.x = self.pos[0]
+    def turnLeft(self):
+        self.pos[0] -= 5
+
+    def turnRight(self):
+        self.pos[0] += 5
 
 class Game:
     def __init__(self):
@@ -62,6 +64,11 @@ class Game:
     def run(self):
         while 1:
             for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        player.turnLeft()
+                    if event.key == pygame.K_RIGHT:
+                        player.turnRight()
                 if event.type == QUIT:
                     return
             self.update()
@@ -78,9 +85,9 @@ class Game:
 
         pygame.display.flip()
 
-
-game = Game()
-player = BasicPlayer()
-wall = BasicWall(300,0)
-game.set_actors([wall, player])
-game.run()
+if __name__ == '__main__':
+    game = Game()
+    player = BasicPlayer()
+    wall = BasicWall(300,0)
+    game.set_actors([wall, player])
+    game.run()
