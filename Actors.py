@@ -53,7 +53,14 @@ class Game:
         self.background.fill((250, 250, 250))
         #code demo
         tmxdata = load_pygame("ressources/testmap/map.tmx")
-        self.background.blit(tmxdata.get_tile_image_by_gid(1), (0, 0))
+        tempSurf = pygame.Surface((background.get_width()*2, background.get_height()*2))
+        pygame.transform.scale(tmxdata.get_tile_image_by_gid(1), (background.get_width()*2, background.get_height()*2), tempSurf)
+        self.background.blit(tempSurf, (0, 0))
+
+        
+
+        
+
 
     def set_actors(self,actors):
         self.actors = actors
