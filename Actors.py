@@ -1,6 +1,9 @@
 import pygame
 from pygame.locals import *
 
+PLAYER = 0
+WALL = 1
+
 class Actor:
     def __init__(self,filename, tag):
         self.tag = tag
@@ -11,17 +14,29 @@ class Actor:
         pass
 
     def act(self,delta):
-        self.pos[0] = self.pos[0] + delta*30/1000
         self.rect.x = self.pos[0]
+        self.rect.y = self.pos[1]
 
     def draw(self,location):
-        location.blit(self.img,self.rect)
-
-    def get_tag(self):
-        return self.tag
+        if hasattr(self, 'img'):
+            location.blit(self.img,self.rect)
 
     def collide_with(self,other_col):
         print(other_col)
+
+class BasicWall(Actor):
+    def __init__(self, x,y):
+        super().__init__("brick.jpg", WALL)
+        self.pos[0] = x
+        self.pos[1] = y
+
+class BasicPlayer(Actor):
+    def __init__(self):
+        super().__init__("intro_ball.gif", PLAYER)
+
+    def act(self, delta):
+        self.pos[0] = self.pos[0] + delta*50/1000
+        self.rect.x = self.pos[0]
 
 class Game:
     def __init__(self):
@@ -38,13 +53,12 @@ class Game:
 
         self.col_lists = {}
         for actor in actors:
-            if actor.get_tag() in self.col_lists:
-                self.col_lists[actor.get_tag()].append(actor)
+            if actor.tag in self.col_lists:
+                self.col_lists[actor.tag].append(actor)
             else:
-                self.col_lists[actor.get_tag()] = [actor]
+                self.col_lists[actor.tag] = [actor]
 
     def run(self):
-        print(self.col_lists)
         while 1:
             for event in pygame.event.get():
                 if event.type == QUIT:
@@ -65,7 +79,7 @@ class Game:
 
 
 game = Game()
-ball = Actor('intro_ball.gif', 'project')
-player = Actor('intro_ball.gif', 'player')
-game.set_actors([ball, player])
+player = BasicPlayer()
+wall = BasicWall(300,0)
+game.set_actors([wall, player])
 game.run()
