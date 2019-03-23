@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 from pytmx.util_pygame import load_pygame
-
+import sys
 
 PLAYER = 0
 WALL = 1
@@ -13,7 +13,6 @@ class Actor:
             self.img = pygame.image.load(filename)
             self.rect = self.img.get_rect()
             self.pos = [0.0, 0.0]
-        pass
 
     def act(self,delta):
         self.rect.x = self.pos[0]
@@ -32,12 +31,39 @@ class BasicWall(Actor):
 class BasicPlayer(Actor):
     def __init__(self):
         super().__init__("cursor.png", PLAYER)
+        self.vel = [0.0, 0.0]
+        self.orig_img = self.img
+        self.angle = 0
+        self.center = self.rect.center
+        self.anglular_vel = 100
 
-    def turnLeft(self):
-        self.pos[0] -= 5
+    def act(self,delta):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            self.turnLeft(delta)
 
-    def turnRight(self):
-        self.pos[0] += 5
+        if keys[pygame.K_RIGHT]:
+            self.turnRight(delta)
+
+        if keys[pygame.K_UP]:
+            self.pos[0] += 10 * delta
+            self.pos[1] += 10 * delta
+
+        # self.pos[0] += self.vel[0] * delta
+        # self.pos[1] += self.vel[1] * delta
+        super().act(delta)
+
+    def turnLeft(self, delta):
+        self.angle += (self.anglular_vel * delta) % 360
+        print(self.center)
+        self.img = pygame.transform.rotate(self.orig_img, self.angle)
+        self.rect = self.img.get_rect()
+        self.rect.center = self.center
+        print(self.img.get_rect().center)
+
+    def turnRight(self, delta):
+        self.angle -= (self.anglular_vel * delta) % 360
+        self.img = pygame.transform.rotate(self.orig_img, self.angle)
 
     def collide(self):
         sys.exit(0)
@@ -79,18 +105,13 @@ class Game:
     def run(self):
         while 1:
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_LEFT:
-                        player.turnLeft()
-                    if event.key == pygame.K_RIGHT:
-                        player.turnRight()
                 if event.type == QUIT:
                     return
             self.update()
 
     def update(self):
         self.screen.blit(self.background, (0, 0))
-        delta = self.clock.tick(60)
+        delta = self.clock.tick(60) / 1000
 
         for actor in self.actors:
             actor.act(delta)
