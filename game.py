@@ -5,6 +5,7 @@ from cocos.scene import Scene
 from cocos.layer import Layer
 from cocos.director import director
 from pyglet.window import key
+import math
 
 
 class HelloWorld(Layer):
@@ -17,8 +18,10 @@ class HelloWorld(Layer):
         self.cursor = cocos.sprite.Sprite(
             image="cursor.png"
         )
-        self.cursor.position = 10, director.get_window_size()[1] - 10
-        self.cursor.velocity = 0, 0
+        self.cursor.position = 350, 350
+        self.cursor.speed = 50
+        self.cursor.angular_speed = 150
+        self.cursor.rotation = 90
         self.add(self.cursor)
 
         self.schedule(self.update)
@@ -26,13 +29,13 @@ class HelloWorld(Layer):
     def update(self, delta):
         for k in self.keys_pressed:
             if k == key.LEFT:
-                self.cursor.position = self.cursor.position[0] - 50 * delta, self.cursor.position[1]
+                self.cursor.do(RotateBy(-self.cursor.angular_speed * delta, 0))
             if k == key.RIGHT:
-                self.cursor.position = self.cursor.position[0] + 50 * delta, self.cursor.position[1]
-            if k == key.UP:
-                self.cursor.position = self.cursor.position[0], self.cursor.position[1] + 50 * delta
-            if k == key.DOWN:
-                self.cursor.position = self.cursor.position[0], self.cursor.position[1] - 50 * delta
+                self.cursor.do(RotateBy(self.cursor.angular_speed * delta, 0))
+
+        x = (self.cursor.speed * delta) * math.sin(math.radians(self.cursor.rotation))
+        y = (self.cursor.speed * delta) * math.cos(math.radians(self.cursor.rotation))
+        self.cursor.position = self.cursor.position[0] + x, self.cursor.position[1] + y
 
     def on_key_press(self, key, modifiers):
         """This function is called when a key is pressed.
