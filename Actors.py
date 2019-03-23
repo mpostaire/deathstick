@@ -1,5 +1,7 @@
 import pygame
 from pygame.locals import *
+from pytmx.util_pygame import load_pygame
+
 
 PLAYER = 0
 WALL = 1
@@ -49,6 +51,9 @@ class Game:
         background = pygame.Surface(self.screen.get_size())
         self.background = background.convert()
         self.background.fill((250, 250, 250))
+        #code demo
+        tmxdata = load_pygame("ressources/testmap/map.tmx")
+        self.background.blit(tmxdata.get_tile_image_by_gid(1), (0, 0))
 
     def set_actors(self,actors):
         self.actors = actors
