@@ -55,10 +55,14 @@ class Game:
         tmxdata = load_pygame("ressources/testmap/map.tmx")
         self.background.blit(tmxdata.get_tile_image_by_gid(1), (0, 0))
 
-    def set_actors(self,actors):
+    def set_actors(self,actors, walls):
         self.actors = actors
 
-        self.col_lists = {}
+        self.col_lists = {WALL:[]}
+        if walls:
+            for wall in walls:
+                self.col_lists[WALL].append(wall)
+
         for actor in actors:
             if actor.tag == PLAYER:
                 self.player_actor = actor
@@ -102,5 +106,5 @@ if __name__ == '__main__':
     game = Game()
     player = BasicPlayer()
     wall = BasicWall(150,0)
-    game.set_actors([wall, player])
+    game.set_actors([wall, player], None)
     game.run()
