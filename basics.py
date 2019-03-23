@@ -6,13 +6,7 @@ MAX_FPS = 60
 clock = None
 frame_count = 0
 
-def act():
-    #logic goes here
-    pass
-
-def draw():
-    #drawing stuff comes here
-    pass
+actors = None
 
 def main():
     # Initialise screen
