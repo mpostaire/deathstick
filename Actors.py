@@ -10,7 +10,7 @@ class Actor:
     def __init__(self,filename, tag):
         self.tag = tag
         if filename:
-            self.img = pygame.image.load(filename)
+            self.img = pygame.image.load(filename).convert_alpha()
             self.rect = self.img.get_rect()
             self.pos = [0.0, 0.0]
 
@@ -35,7 +35,7 @@ class BasicPlayer(Actor):
         self.orig_img = self.img
         self.angle = 0
         self.center = self.rect.center
-        self.anglular_vel = 100
+        self.angular_vel = 100
 
     def act(self,delta):
         keys = pygame.key.get_pressed()
@@ -54,15 +54,15 @@ class BasicPlayer(Actor):
         super().act(delta)
 
     def turnLeft(self, delta):
-        self.angle += (self.anglular_vel * delta) % 360
+        self.angle += (self.angular_vel * delta) % 360
         print(self.center)
         self.img = pygame.transform.rotate(self.orig_img, self.angle)
         self.rect = self.img.get_rect()
-        self.rect.center = self.center
+        self.img.get_rect().center = self.center
         print(self.img.get_rect().center)
 
     def turnRight(self, delta):
-        self.angle -= (self.anglular_vel * delta) % 360
+        self.angle -= (self.angular_vel * delta) % 360
         self.img = pygame.transform.rotate(self.orig_img, self.angle)
 
     def collide(self):
