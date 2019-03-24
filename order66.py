@@ -22,32 +22,33 @@ import cocos.collision_model as cm
 import cocos.euclid as eu
 import math
 
-CURRENT_TMX = None
-CURRENT_WALL_ARRAY = None
-THE_ELDER_SCROLLS_MANAGER = None
-DELAYED_ARRAY = None
-BACKGROUND_RECT = None
-COL_MGR = None
-SPAWN = [0, 0]
+CURRENT_TMX = None #Holds the tmx that loads the map
+CURRENT_WALL_ARRAY = None #Holds only the objects representing the deadly walls
+THE_ELDER_SCROLLS_MANAGER = None #funny name for the scrolling manager
+DELAYED_ARRAY = None#holds the objects that need a layer and cursor instance to be fully operational
+BACKGROUND_RECT = None #background dimensions
+COL_MGR = None#collision manager
+SPAWN = [0, 0]#default spawn position
 
-
+#helper function
 def get_path(file):
     return os.path.join(
         os.path.dirname(__file__),
         file)
 
-
+#loads tmx from file and replace current_tmx
 def load_tmx(map_string):
     global CURRENT_TMX
     CURRENT_TMX = pytmx.TiledMap(map_string)
 
-
+#gets the background path from the tmx's data
 def get_background_path():
     global CURRENT_TMX
     print(CURRENT_TMX.get_tile_image_by_gid(1)[0])
     return CURRENT_TMX.get_tile_image_by_gid(1)[0]
 
-
+#extract the deadly invisible walls from the tmx
+#and loads a lot of the other entities on the map
 def load_wall_array():
     global CURRENT_WALL_ARRAY
     global CURRENT_TMX
@@ -63,9 +64,11 @@ def load_wall_array():
         bottom_left_x = object.x
 
         rect = cocos.rect.Rect(object.x, bottom_left_y, object.width, object.height)
-        wall = InvisibleWall(rect, object.name)
+        wall = InvisibleWall(rect, object.name)#?
+        #guessing the type of the parsed game entity
         split = wall.name.split(":")
         if split[0] == "spawn":
+            #it's a spawn point
             SPAWN = [bottom_left_x, bottom_left_y, float(split[1])]
         elif split[0] == "turret":
             print(split) #pos, delay, dist, speed, ammo
