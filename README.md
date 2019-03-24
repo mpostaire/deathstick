@@ -1,7 +1,13 @@
 # Pycon
 Game jam 2.0 submission
 
-# Modding API
+To launch the game, open a terminal in the game folder and execute `python order66.py`
+
+## dependencies
+- python >= 3.6.5
+- cocos2d
+
+## Modding API
 You can make your custom made map. 
 It's very easy just let me introduce you to our **beautiful** work.
 
