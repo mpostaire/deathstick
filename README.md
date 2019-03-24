@@ -3,6 +3,9 @@ Game jam 2.0 submission
 
 To launch the game, open a terminal in the game folder and execute `python order66.py`
 
+## Controls
+`Left/Right Arrows` to move, `Space` to activate adstop shield, `B` to activate bullet time
+
 ## dependencies
 - python >= 3.7.1
 - cocos2d
