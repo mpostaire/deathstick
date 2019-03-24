@@ -79,18 +79,11 @@ def load_wall_array():
             )
         CURRENT_WALL_ARRAY.append(wall)
 
+
 def spawn_delayed(layer, player):
     global DELAYED_ARRAY
     for delayed in DELAYED_ARRAY:
         delayed.activate(layer, player)
-
-
-
-#the background is offset in regard with the collision boxes
-
-
-
-
 
 
 class Game(cocos.layer.ScrollableLayer):
@@ -98,7 +91,6 @@ class Game(cocos.layer.ScrollableLayer):
 
     def __init__(self, name):
         super(Game, self).__init__()
-
 
         self.keys_pressed = set()
 
@@ -122,17 +114,9 @@ class Game(cocos.layer.ScrollableLayer):
 
         self.background.position = offset
 
-        # self.label = Label(
-        #     'x: y:',
-        #     font_name='Times New Roman',
-        #     color=(255, 0, 0, 255),
-        #     font_size=64,
-        #     anchor_x='center', anchor_y='center'
-        # )
         spawn_delayed([self], [self.cursor])
         self.add(self.background)
         self.add(self.cursor)
-        # self.add(self.label)
 
         #adding stuff to the collision world
         global COL_MGR
@@ -156,11 +140,6 @@ class Game(cocos.layer.ScrollableLayer):
         draw_rect(self.cursor.get_rect(), self)
 
     def update(self, delta):
-        global THE_ELDER_SCROLLS_MANAGER
-        THE_ELDER_SCROLLS_MANAGER.set_focus(self.cursor.position[0], self.cursor.position[1])
-        # self.label.element.text = "x: {}, y: {}".format(int(self.cursor.position[0]), int(self.cursor.position[1]))
-        # self.label.position = self.cursor.position[0] - 50, self.cursor.position[1] - +20
-
         for k in self.keys_pressed:
             if k == key.LEFT:
                 self.cursor.do(RotateBy(-self.cursor.angular_speed * delta, 0))
@@ -208,6 +187,9 @@ class Game(cocos.layer.ScrollableLayer):
             elif split[0] == "lose":
                 print("you lost")
                 sys.exit(0)
+
+        global THE_ELDER_SCROLLS_MANAGER
+        THE_ELDER_SCROLLS_MANAGER.set_focus(self.cursor.position[0], self.cursor.position[1])
 
     def changelevel(self, name):
         print(name)
