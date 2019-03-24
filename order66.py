@@ -236,11 +236,10 @@ class Game(cocos.layer.ScrollableLayer):
 if __name__ == '__main__':
     director.init(width=800, height=600)
     #setting up the map
-    load_tmx("res/level02/map.tmx")
+    load_tmx("res/level01/map.tmx")
     THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
     THE_ELDER_SCROLLS_MANAGER.scale = 1.0
     game = Game("")
     THE_ELDER_SCROLLS_MANAGER.add(game)
     main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
     director.run(main_scene)
-
