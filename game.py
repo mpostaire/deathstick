@@ -5,6 +5,8 @@ import cocos
 
 from cocos.scene import Scene
 from cocos.director import director
+from cocos.text import Label
+from cocos.sprite import Sprite
 from pyglet.window import key
 from cocos.actions import *
 import math
@@ -53,14 +55,14 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         super(HelloWorld, self).__init__()
         self.keys_pressed = set()
 
-        self.cursor = cocos.sprite.Sprite(
-            image="cursor.png"
+        self.cursor = Sprite(
+            image="cursor.png",
+            position=(350, 350),
+            rotation=180
         )
-        self.cursor.position = 350, 350
         self.cursor.speed = 200
         self.cursor.angular_speed = 150
-        self.cursor.rotation = 90
-        self.background = cocos.sprite.Sprite(
+        self.background = Sprite(
             image=get_background_path()
         )
         #à cacher
@@ -75,7 +77,7 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         self.cursor.position = 10, director.get_window_size()[1] - 10
         self.cursor.velocity = 0, 0
 
-        self.label = cocos.text.Label(
+        self.label = Label(
             'x: y:',
             font_name='Times New Roman',
             color=(255, 0, 0, 255),
@@ -83,47 +85,18 @@ class HelloWorld(cocos.layer.ScrollableLayer):
             anchor_x='center', anchor_y='center'
         )
 
-
         self.add(self.background)
         self.add(self.cursor)
         self.add(self.label)
-        #à mettre dans une fonction debug
+
+        self.debug()
+
+        self.schedule(self.update)
+
+    def debug(self):
         global CURRENT_WALL_ARRAY
         for rect in CURRENT_WALL_ARRAY:
-            lab = cocos.text.Label('G',
-                                   font_name='Times New Roman',
-                                   color=(255, 0, 0, 255),
-                                   font_size=32,
-                                   anchor_x="center", anchor_y='center'
-                                   )
-            lab.position = rect.get_origin()
-            self.add(lab)
-            lab = cocos.text.Label('G',
-                                   font_name='Times New Roman',
-                                   color=(255, 0, 0, 255),
-                                   font_size=32,
-                                   anchor_x="center", anchor_y='center'
-                                   )
-            lab.position = rect.x + rect.width, rect.y
-            self.add(lab)
-            lab = cocos.text.Label('G',
-                                   font_name='Times New Roman',
-                                   color=(255, 0, 0, 255),
-                                   font_size=32,
-                                   anchor_x="center", anchor_y='center'
-                                   )
-            lab.position = rect.x + rect.width, rect.y + rect.height
-            self.add(lab)
-            lab = cocos.text.Label('G',
-                                   font_name='Times New Roman',
-                                   color=(255, 0, 0, 255),
-                                   font_size=32,
-                                   anchor_x="center", anchor_y='center'
-                                   )
-            lab.position = rect.x, rect.y + rect.height
-            self.add(lab)
-        ##
-        self.schedule(self.update)
+            draw_rect(rect, self)
 
     def update(self, delta):
         global THE_ELDER_SCROLLS_MANAGER
@@ -161,6 +134,30 @@ class HelloWorld(cocos.layer.ScrollableLayer):
 
         self.keys_pressed.remove(key)
 
+def draw_rect(rect, layer):
+    # bottom line
+    line = cocos.draw.Line(rect.get_origin(),
+                           (rect.x + rect.width, rect.y),
+                           (255, 0, 0, 255), 5)
+    layer.add(line)
+
+    # top line
+    line = cocos.draw.Line((rect.x + rect.width, rect.y + rect.height),
+                           (rect.x, rect.y + rect.height),
+                           (255, 0, 0, 255), 5)
+    layer.add(line)
+
+    # left line
+    line = cocos.draw.Line(rect.get_origin(),
+                           (rect.x, rect.y + rect.height),
+                           (255, 0, 0, 255), 5)
+    layer.add(line)
+
+    # right line
+    line = cocos.draw.Line((rect.x + rect.width, rect.y),
+                           (rect.x + rect.width, rect.y + rect.height),
+                           (255, 0, 0, 255), 5)
+    layer.add(line)
 
 if __name__ == '__main__':
     director.init(width=800, height=600)
