@@ -1,0 +1,16 @@
+for the asset "Female-Head-Profile-Silhouette-2.png":
+	https://openclipart.org/image/300px/svg_to_png/289070/Female-Head-Profile-Silhouette-2.png
+	Licensed under 
+		CC0 1.0 Universal (CC0 1.0)
+		Public Domain Dedication 
+for the asset of cards playing symbols in level02:
+	https://openclipart.org/image/800px/svg_to_png/216902/Card-Symbols-by-Merlin2525.png
+	Licensed under 
+		CC0 1.0 Universal (CC0 1.0)
+		Public Domain Dedication 
+for the dark website used as a background in level02:
+	https://html5up.net/halcyonic/download
+	Licensed under
+		Creative Commons Attribution 3.0 Unported
+	see level02/LICENSE.txt
+
