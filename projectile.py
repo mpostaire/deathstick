@@ -5,7 +5,11 @@ from cocos.text import Label
 import cocos.euclid as eu
 import cocos.collision_model
 
-
+"""
+This class represents laters that are shot at the players
+They have a reference to their parent turret which are the only objects 
+supposed to spawn those
+"""
 class Projectile(Label):
     def __init__(self, position, rotation, layer, speed_wagon, speed, bullet_len, char):
         self.size = 16
@@ -21,23 +25,27 @@ class Projectile(Label):
         self.lifetime = 0.0
         self.max_lifetime = bullet_len
         self.speed = speed
-        self.speed_vec = speed_wagon.normalize()
-        self.angular_speed = 100
+        self.speed_vec = speed_wagon.normalize() #direction of movement
+        self.angular_speed = 100 #useless but no time to explain
         self.position = position
-        self.rotation = rotation
-        self.layer = layer[0]
-        self.turret = None
+        self.rotation = rotation #direction of movement in degree
+        self.layer = layer[0] #refernce to the layer it spawns in needed so we can remove the instances of projectile
+        #from within this file, without needing to bloat the main file.
+        self.turret = None #the turret variable needs to be set after this instance creation
         vec_center = eu.Vector2(self.x, self.y)
         self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.size / 2,
-                                                        half_height=self.size / 2)
+                                                        half_height=self.size / 2) #for collision purposes
 
     def update_cshape(self):
+        #update collision shape of the projectile
         vec_center = eu.Vector2(self.x,
                                 self.y,
                                 )
         self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.size / 2, half_height=self.size / 2)
 
+
     def update(self, delta):
+        #defines the behavior of this object each delta time
         self.lifetime += delta
         if self.lifetime >= self.max_lifetime:
             self.remove()
@@ -55,5 +63,7 @@ class Projectile(Label):
     def remove(self):
         self.layer.remove(self)
         if self.turret is not None:
+            #the turret holds an array of all the projectile it shots.
+            #it is needed to remove this instance from it.
             self.turret.projectiles.remove(self)
             self.turret = None
