@@ -24,6 +24,7 @@ CURRENT_WALL_ARRAY = None
 THE_ELDER_SCROLLS_MANAGER = None
 BACKGROUND_RECT = None
 COL_MGR = None
+SPAWN = [0, 0]
 
 
 def get_path(file):
@@ -47,13 +48,18 @@ def load_wall_array():
     global CURRENT_WALL_ARRAY
     global CURRENT_TMX
     global BACKGROUND_RECT
+    global SPAWN
+
     CURRENT_WALL_ARRAY = list()
     for object in CURRENT_TMX.objects:
         top_left_y = object.y
         bottom_left_y = BACKGROUND_RECT.height - object.height - top_left_y
 
         rect = cocos.rect.Rect(object.x, bottom_left_y, object.width, object.height)
-        CURRENT_WALL_ARRAY.append(InvisibleWall(rect, object.name))
+        wall = InvisibleWall(rect, object.name)
+        if wall.name == "spawn":
+            SPAWN = [object.x, object.y]
+        CURRENT_WALL_ARRAY.append(wall)
 
 #the background is offset in regard with the collision boxes
 
@@ -65,8 +71,10 @@ def load_wall_array():
 class Game(cocos.layer.ScrollableLayer):
     is_event_handler = True
 
-    def __init__(self):
+    def __init__(self, name):
         super(Game, self).__init__()
+
+
         self.keys_pressed = set()
 
         self.background = Sprite(
@@ -77,9 +85,10 @@ class Game(cocos.layer.ScrollableLayer):
         BACKGROUND_RECT = self.background.get_rect()
         offset = BACKGROUND_RECT.width/2, BACKGROUND_RECT.height/2
         load_wall_array()
+        global SPAWN
         self.cursor = Cursor(
             "res/cursor.png",
-            50, BACKGROUND_RECT.height - 50,
+            SPAWN[0], SPAWN[1],
             0,
         )
         ##
@@ -119,6 +128,7 @@ class Game(cocos.layer.ScrollableLayer):
         draw_rect(self.cursor.get_rect(), self)
 
     def update(self, delta):
+
         global THE_ELDER_SCROLLS_MANAGER
         THE_ELDER_SCROLLS_MANAGER.set_focus(self.cursor.position[0], self.cursor.position[1])
         self.label.element.text = "x: {}, y: {}".format(int(self.cursor.position[0]), int(self.cursor.position[1]))
@@ -143,13 +153,25 @@ class Game(cocos.layer.ScrollableLayer):
             COL_MGR.add(wall)
 
         for other in COL_MGR.iter_colliding(self.cursor):
-            if other.name == "win":
+            split = other.name.split(":")
+            if split[0] == "win":
                 print("you win")
-            else:
+                self.changelevel(split[1])
+            elif split[0] == "lose":
                 print("you lost")
                 sys.exit(0)
 
         #self.debug()
+    def changelevel(self, name):
+        print(name)
+        load_tmx("res/"+name+"/map.tmx")
+        global THE_ELDER_SCROLLS_MANAGER
+        THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
+        THE_ELDER_SCROLLS_MANAGER.add(Game(name))
+        main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
+        director.replace(main_scene)
+
+
 
 
 
@@ -171,7 +193,11 @@ class Game(cocos.layer.ScrollableLayer):
         Constants are the ones from pyglet.window.key
         """
 
-        self.keys_pressed.remove(key)
+        try:
+            self.keys_pressed.remove(key)
+        except:
+            print('tried to remove a key during level change !')
+
 
 
 if __name__ == '__main__':
@@ -180,8 +206,8 @@ if __name__ == '__main__':
     load_tmx("res/level02/map.tmx")
     THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
     THE_ELDER_SCROLLS_MANAGER.scale = 1.0
-
-    THE_ELDER_SCROLLS_MANAGER.add(Game())
-    THE_ELDER_SCROLLS_MANAGER.set_focus(10, director.get_window_size()[1] - 10)
+    game = Game("")
+    THE_ELDER_SCROLLS_MANAGER.add(game)
     main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
     director.run(main_scene)
+

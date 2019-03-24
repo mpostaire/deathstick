@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="93" height="51" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="14">
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="93" height="51" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="16">
  <tileset firstgid="1" source="tileset.tsx"/>
  <layer id="1" name="background" width="93" height="51">
   <data encoding="csv">
@@ -57,14 +57,12 @@
 </data>
  </layer>
  <objectgroup id="2" name="collision">
-  <object id="5" x="0" y="0" width="64" height="32"/>
-  <object id="6" x="1445" y="-1" width="42" height="44"/>
-  <object id="7" x="1439" y="778" width="47" height="32"/>
-  <object id="8" x="2" y="771" width="33" height="56"/>
-  <object id="9" x="458" y="291" width="589" height="55"/>
-  <object id="10" x="592" y="370" width="308" height="35"/>
+  <object id="5" x="0" y="0" width="1482" height="9"/>
+  <object id="6" x="1477" y="-1" width="10" height="816"/>
+  <object id="7" x="1" y="805" width="1485" height="5"/>
+  <object id="8" x="2" y="2" width="10" height="825"/>
   <object id="11" x="592" y="433" width="311" height="20"/>
-  <object id="12" x="610" y="169" width="270" height="94"/>
-  <object id="13" x="693" y="16" width="108" height="590"/>
+  <object id="14" name="win:level02" x="596" y="363" width="158" height="46"/>
+  <object id="15" name="spawn" x="449" y="85" width="59" height="65"/>
  </objectgroup>
 </map>

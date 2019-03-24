@@ -8,6 +8,9 @@ class InvisibleWall():
         self.cshape = cocos.collision_model.AARectShape(vec_center,  half_width=rect.width / 2,
                                                         half_height=rect.height / 2
                                                         )
-        self.name = name
+        if name is None:
+            self.name = "lose"
+        else:
+            self.name = name
         self.rect = rect
 
