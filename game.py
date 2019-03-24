@@ -183,7 +183,11 @@ class Game(cocos.layer.ScrollableLayer):
             split = other.name.split(":")
             if split[0] == "win":
                 print("you win")
-                self.changelevel(split[1])
+                if split[1] == "end":
+                    print("Java c'est plus meilleur.")
+                    sys.exit(0)
+                else:
+                    self.changelevel(split[1])
             elif split[0] == "lose":
                 print("you lost")
                 sys.exit(0)

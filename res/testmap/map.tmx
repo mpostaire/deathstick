@@ -62,7 +62,7 @@
   <object id="7" x="1" y="805" width="1485" height="5"/>
   <object id="8" x="2" y="2" width="10" height="825"/>
   <object id="11" x="592" y="433" width="311" height="20"/>
-  <object id="14" name="win:level02" x="596" y="363" width="158" height="46"/>
+  <object id="14" name="win:end" x="596" y="363" width="158" height="46"/>
   <object id="15" name="spawn" x="449" y="85" width="59" height="65"/>
  </objectgroup>
 </map>
