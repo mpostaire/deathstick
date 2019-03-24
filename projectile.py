@@ -41,7 +41,6 @@ class Projectile(Label):
         self.lifetime += delta
         if self.lifetime >= self.max_lifetime:
             self.remove()
-            self.turret.projectiles.remove(self)
             return
 
         x = (self.speed * delta) * self.speed_vec.x
@@ -55,3 +54,6 @@ class Projectile(Label):
 
     def remove(self):
         self.layer.remove(self)
+        if self.turret is not None:
+            self.turret.projectiles.remove(self)
+            self.turret = None
