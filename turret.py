@@ -10,10 +10,11 @@ import cocos.euclid as eu
 
 class Turret():
 
-    def __init__(self, pos, delay, dist, speed, ammo_type):
+    def __init__(self, pos, delay, dist, speed, ammo_type, bullet_len ):
         self.pos = eu.Vector2(pos[0], pos[1])
         self.delay = delay
         self.dist = dist
+        self.bullet_len = bullet_len
         self.speed = speed
         self.timer = delay
         self.ammo_type = ammo_type
@@ -30,7 +31,7 @@ class Turret():
         diff = eu.Vector2(self.vec_player.x - self.pos.x, self.vec_player.y - self.pos.y)
 
         self.timer -= delta
-        print(self.timer)
+        #print(self.timer)
         if self.timer <= 0 and diff.magnitude() < self.dist:
             self.shoot(diff)
             self.timer = self.delay
@@ -38,12 +39,14 @@ class Turret():
             proj.update(delta)
 
     def shoot(self, diff):
-        print("turret shot")
+        #print("turret shot")
         proj = Projectile(
             [self.pos.x, self.pos.y],
             self.vec_player.angle(eu.Vector2(1, 0)),
             [self.layer],
             diff,
+            self.speed,
+            self.bullet_len,
             self.ammo_type
         )
         proj.turret = self

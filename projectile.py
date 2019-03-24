@@ -7,7 +7,7 @@ import cocos.collision_model
 
 
 class Projectile(Label):
-    def __init__(self, position, rotation, layer, speed_wagon, char):
+    def __init__(self, position, rotation, layer, speed_wagon, speed, bullet_len, char):
         self.size = 16
         super(Label, self).__init__(
             char,
@@ -18,8 +18,8 @@ class Projectile(Label):
         )
         self.creation_time = time.time()
         self.lifetime = 0.0
-        self.max_lifetime = 5.0
-        self.speed = 250
+        self.max_lifetime = bullet_len
+        self.speed = speed
         self.speed_vec = speed_wagon.normalize()
         self.angular_speed = 100
         self.position = position

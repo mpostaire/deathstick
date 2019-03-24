@@ -75,6 +75,7 @@ def load_wall_array():
                         float(split[3]),
                         float(split[4]),
                         split[1],
+                        float(split[5]),
                     )
             )
         CURRENT_WALL_ARRAY.append(wall)
@@ -151,15 +152,19 @@ class Game(cocos.layer.ScrollableLayer):
         x = (self.cursor.speed * delta) * math.sin(math.radians(self.cursor.rotation))
         y = (self.cursor.speed * delta) * math.cos(math.radians(self.cursor.rotation))
         self.cursor.position = self.cursor.position[0] + x, self.cursor.position[1] + y
+        self.cursor.update_cshape()
 
         global COL_MGR
         global CURRENT_WALL_ARRAY
         global DELAYED_ARRAY
+
+        COL_MGR.clear()# fast, no leaks even if changed cshapes
+        COL_MGR.add(self.cursor)
         for delayed in DELAYED_ARRAY:
             delayed.update(delta)
-        COL_MGR.clear()# fast, no leaks even if changed cshapes
-        self.cursor.update_cshape()
-        COL_MGR.add(self.cursor)
+            if type(delayed) == Turret:
+                for proj in delayed.projectiles:
+                    COL_MGR.add(proj)
         for wall in CURRENT_WALL_ARRAY:
             COL_MGR.add(wall)
 
