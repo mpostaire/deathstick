@@ -10,6 +10,7 @@ class Cursor(cocos.sprite.Sprite):
         self.rotation = angle
         self.position = (center_x, center_y)
         self.shielded = False
+        self.bullettime = False
         vec_center = eu.Vector2(self.x , self.y )
         self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.width / 4,
                                                         half_height=self.height / 4)

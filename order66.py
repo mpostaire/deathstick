@@ -6,7 +6,7 @@ import sys
 
 from cocos.scene import Scene
 from cocos.director import director
-from cocos.text import Label
+from bullettime import BulletTime
 from cocos.sprite import Sprite
 from pyglet.window import key
 from cocos.actions import *
@@ -126,6 +126,12 @@ class Game(cocos.layer.ScrollableLayer):
         )
         self.add(self.adstop)
 
+        self.bullettime = BulletTime(
+            "res/bullet_time.png",
+            self.cursor
+        )
+        self.add(self.bullettime)
+
         self.add(self.cursor)
 
 
@@ -151,6 +157,9 @@ class Game(cocos.layer.ScrollableLayer):
         draw_rect(self.cursor.get_rect(), self)
 
     def update(self, delta):
+        if self.cursor.bullettime:
+            delta *= 0.5
+
         for k in self.keys_pressed:
             if k == key.LEFT:
                 self.cursor.do(RotateBy(-self.cursor.angular_speed * delta, 0))
@@ -158,6 +167,8 @@ class Game(cocos.layer.ScrollableLayer):
                 self.cursor.do(RotateBy(self.cursor.angular_speed * delta, 0))
             if k == key.SPACE:
                 self.adstop.activate()
+            if k == key.B:
+                self.bullettime.activate()
 
         x = (self.cursor.speed * delta) * math.sin(math.radians(self.cursor.rotation))
         y = (self.cursor.speed * delta) * math.cos(math.radians(self.cursor.rotation))
@@ -165,6 +176,7 @@ class Game(cocos.layer.ScrollableLayer):
         self.cursor.update_cshape()
 
         self.adstop.act(delta)
+        self.bullettime.act(delta)
 
         global COL_MGR
         global CURRENT_WALL_ARRAY
