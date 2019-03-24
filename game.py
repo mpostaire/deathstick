@@ -68,8 +68,7 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         #à cacher
         global BACKGROUND_RECT
         BACKGROUND_RECT = self.background.get_rect()
-        rect = BACKGROUND_RECT
-        offset = rect.width/2, rect.height/2
+        offset = BACKGROUND_RECT.width/2, BACKGROUND_RECT.height/2
         load_wall_array()
         ##
 
@@ -97,6 +96,7 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         global CURRENT_WALL_ARRAY
         for rect in CURRENT_WALL_ARRAY:
             draw_rect(rect, self)
+        draw_rect(self.background.get_rect(), self)
 
     def update(self, delta):
         global THE_ELDER_SCROLLS_MANAGER
