@@ -24,7 +24,7 @@ It's very easy just let me introduce you to our **beautiful** work.
 - Add object rectangles where you want to make walls that kills you.
   Follow this formatting:
   ```
-  name = loose
+  name = lose
   ```
 - Add turrets where you want to make projectiles that targets you.
 Follow this formatting:
