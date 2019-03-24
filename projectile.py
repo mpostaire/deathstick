@@ -2,13 +2,14 @@ import string
 import random
 import time
 import cocos
+import math
 from cocos.text import Label
 import cocos.euclid as eu
 import cocos.collision_model
 
 
 class Projectile(Label):
-    def __init__(self, position, rotation):
+    def __init__(self, position, rotation, layer, speed_wagon):
         self.size = 16
         super(Label, self).__init__(
             random.choice(string.ascii_lowercase),
@@ -21,9 +22,12 @@ class Projectile(Label):
         self.lifetime = 0.0
         self.max_lifetime = 5.0
         self.speed = 250
+        self.speed_vec = speed_wagon.normalize()
         self.angular_speed = 100
         self.position = position
         self.rotation = rotation
+        self.layer = layer[0]
+        self.turret = None
         vec_center = eu.Vector2(self.x, self.y)
         self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.size / 2,
                                                         half_height=self.size / 2)
@@ -32,5 +36,26 @@ class Projectile(Label):
         vec_center = eu.Vector2(self.x,
                                 self.y,
                                 )
-        self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.size / 2,
-                                                        half_height=self.size / 2)
+        self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.size / 2, half_height=self.size / 2)
+
+    def update(self, delta):
+        self.lifetime += delta
+        if self.lifetime >= self.max_lifetime:
+            self.remove()
+            self.turret.projectiles.remove(self)
+            return
+        if self.turret is not None:
+            x = (self.speed * delta) * self.speed_vec.x
+            y = (self.speed * delta) * self.speed_vec.y
+        else:
+            x = (self.speed * delta) * math.sin(math.radians(self.rotation))
+            y = (self.speed * delta) * math.cos(math.radians(self.rotation))
+        self.position = self.position[0] + x, self.position[1] + y
+        self.update_cshape()
+
+
+    def spawn(self):
+        self.layer.add(self)
+
+    def remove(self):
+        self.layer.remove(self)

@@ -14,6 +14,7 @@ from cursor import Cursor
 from helpers import draw_rect
 from projectile import Projectile
 from invisible_wall import InvisibleWall
+from turret import Turret
 
 
 import cocos.collision_model as cm
@@ -23,6 +24,7 @@ import math
 CURRENT_TMX = None
 CURRENT_WALL_ARRAY = None
 THE_ELDER_SCROLLS_MANAGER = None
+DELAYED_ARRAY = None
 BACKGROUND_RECT = None
 COL_MGR = None
 SPAWN = [0, 0]
@@ -50,17 +52,39 @@ def load_wall_array():
     global CURRENT_TMX
     global BACKGROUND_RECT
     global SPAWN
+    global DELAYED_ARRAY
 
     CURRENT_WALL_ARRAY = list()
+    DELAYED_ARRAY = list()
     for object in CURRENT_TMX.objects:
         top_left_y = object.y
         bottom_left_y = BACKGROUND_RECT.height - object.height - top_left_y
+        bottom_left_x = object.x
 
         rect = cocos.rect.Rect(object.x, bottom_left_y, object.width, object.height)
         wall = InvisibleWall(rect, object.name)
-        if wall.name == "spawn":
-            SPAWN = [object.x, object.y]
+        split = wall.name.split(":")
+        if split[0] == "spawn":
+            SPAWN = [bottom_left_x, bottom_left_y]
+        elif split[0] == "turret":
+            print(split) #pos, delay, dist, speed, ammo
+            DELAYED_ARRAY.append(
+                Turret(
+                        (bottom_left_x, bottom_left_y),
+                        float(split[2]),
+                        float(split[3]),
+                        float(split[4]),
+                        split[1],
+                    )
+            )
         CURRENT_WALL_ARRAY.append(wall)
+
+def spawn_delayed(layer, player):
+    global DELAYED_ARRAY
+    for delayed in DELAYED_ARRAY:
+        delayed.activate(layer, player)
+
+
 
 #the background is offset in regard with the collision boxes
 
@@ -105,7 +129,7 @@ class Game(cocos.layer.ScrollableLayer):
         #     font_size=64,
         #     anchor_x='center', anchor_y='center'
         # )
-
+        spawn_delayed([self], [self.cursor])
         self.add(self.background)
         self.add(self.cursor)
         # self.add(self.label)
@@ -143,7 +167,12 @@ class Game(cocos.layer.ScrollableLayer):
             if k == key.RIGHT:
                 self.cursor.do(RotateBy(self.cursor.angular_speed * delta, 0))
             if k == key.SPACE:
-                projectile = Projectile((self.cursor.position[0] + 50, self.cursor.position[1] + 50), self.cursor.rotation)
+                projectile = Projectile(
+                    (self.cursor.position[0] + 50, self.cursor.position[1] + 50),
+                    self.cursor.rotation,
+                    [self],
+                    None
+                )
                 self.projectiles.append(projectile)
                 self.add(projectile)
 
@@ -153,6 +182,9 @@ class Game(cocos.layer.ScrollableLayer):
 
         global COL_MGR
         global CURRENT_WALL_ARRAY
+        global DELAYED_ARRAY
+        for delayed in DELAYED_ARRAY:
+            delayed.update(delta)
         COL_MGR.clear()# fast, no leaks even if changed cshapes
         self.cursor.update_cshape()
         COL_MGR.add(self.cursor)
@@ -160,15 +192,7 @@ class Game(cocos.layer.ScrollableLayer):
             COL_MGR.add(wall)
 
         for p in self.projectiles:
-            p.lifetime += delta
-            if p.lifetime >= p.max_lifetime:
-                self.remove(p)
-                self.projectiles.remove(p)
-                continue
-            x = (p.speed * delta) * math.sin(math.radians(p.rotation))
-            y = (p.speed * delta) * math.cos(math.radians(p.rotation))
-            p.position = p.position[0] + x, p.position[1] + y
-            p.update_cshape()
+            p.update(delta)
             COL_MGR.add(p)
 
             for other in COL_MGR.iter_colliding(p):
