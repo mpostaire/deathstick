@@ -15,6 +15,7 @@ from helpers import draw_rect
 from projectile import Projectile
 from invisible_wall import InvisibleWall
 from turret import Turret
+from adstop import AdStop
 
 
 import cocos.collision_model as cm
@@ -65,7 +66,7 @@ def load_wall_array():
         wall = InvisibleWall(rect, object.name)
         split = wall.name.split(":")
         if split[0] == "spawn":
-            SPAWN = [bottom_left_x, bottom_left_y]
+            SPAWN = [bottom_left_x, bottom_left_y, float(split[1])]
         elif split[0] == "turret":
             print(split) #pos, delay, dist, speed, ammo
             DELAYED_ARRAY.append(
@@ -108,8 +109,7 @@ class Game(cocos.layer.ScrollableLayer):
         global SPAWN
         self.cursor = Cursor(
             "res/cursor.png",
-            SPAWN[0], SPAWN[1],
-            0,
+            SPAWN[0], SPAWN[1], SPAWN[2]
         )
         ##
 
@@ -117,7 +117,17 @@ class Game(cocos.layer.ScrollableLayer):
 
         spawn_delayed([self], [self.cursor])
         self.add(self.background)
+
+        self.adstop = AdStop(
+            "res/stop.png",
+            (self.cursor.position[0] - director.get_window_size()[0] / 2 + 20,
+             self.cursor.position[1] + director.get_window_size()[1] / 2 - 20),
+            self.cursor
+        )
+        self.add(self.adstop)
+
         self.add(self.cursor)
+
 
         #adding stuff to the collision world
         global COL_MGR
@@ -147,12 +157,14 @@ class Game(cocos.layer.ScrollableLayer):
             if k == key.RIGHT:
                 self.cursor.do(RotateBy(self.cursor.angular_speed * delta, 0))
             if k == key.SPACE:
-                pass
+                self.adstop.activate()
 
         x = (self.cursor.speed * delta) * math.sin(math.radians(self.cursor.rotation))
         y = (self.cursor.speed * delta) * math.cos(math.radians(self.cursor.rotation))
         self.cursor.position = self.cursor.position[0] + x, self.cursor.position[1] + y
         self.cursor.update_cshape()
+
+        self.adstop.act(delta)
 
         global COL_MGR
         global CURRENT_WALL_ARRAY
@@ -179,8 +191,13 @@ class Game(cocos.layer.ScrollableLayer):
 
         for other in COL_MGR.iter_colliding(self.cursor):
             if type(other) == Projectile:
-                print("you lost")
-                sys.exit(0)
+                if self.cursor.shielded:
+                    self.adstop.reset()
+                    other.remove()
+                    continue
+                else:
+                    print("you lost")
+                    sys.exit(0)
             split = other.name.split(":")
             if split[0] == "win":
                 print("you win")
@@ -206,23 +223,9 @@ class Game(cocos.layer.ScrollableLayer):
         director.replace(main_scene)
 
     def on_key_press(self, key, modifiers):
-        """This function is called when a key is pressed.
-        'key' is a constant indicating which key was pressed.
-        'modifiers' is a bitwise or of several constants indicating which
-            modifiers are active at the time of the press (ctrl, shift, capslock, etc.)
-        """
         self.keys_pressed.add(key)
 
     def on_key_release(self, key, modifiers):
-        """This function is called when a key is released.
-
-        'key' is a constant indicating which key was pressed.
-        'modifiers' is a bitwise or of several constants indicating which
-            modifiers are active at the time of the press (ctrl, shift, capslock, etc.)
-
-        Constants are the ones from pyglet.window.key
-        """
-
         try:
             self.keys_pressed.remove(key)
         except:
@@ -233,11 +236,10 @@ class Game(cocos.layer.ScrollableLayer):
 if __name__ == '__main__':
     director.init(width=800, height=600)
     #setting up the map
-    load_tmx("res/level02/map.tmx")
+    load_tmx("res/level01/map.tmx")
     THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
     THE_ELDER_SCROLLS_MANAGER.scale = 1.0
     game = Game("")
     THE_ELDER_SCROLLS_MANAGER.add(game)
     main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
     director.run(main_scene)
-

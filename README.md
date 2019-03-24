@@ -4,7 +4,7 @@ Game jam 2.0 submission
 To launch the game, open a terminal in the game folder and execute `python order66.py`
 
 ## dependencies
-- python >= 3.6.5
+- python >= 3.7.1
 - cocos2d
 
 ## Modding API
@@ -20,12 +20,11 @@ It's very easy just let me introduce you to our **beautiful** work.
  saved in your level's directory.
 - Click the background in the tileset bar
 - Place it on the bottom left corner.
-- Now you can place the game objects, in the calc menu create a new object calq
--
+- Now you can place the game objects, in the layer menu create a new object layer
 - Add object rectangles where you want to make walls that kills you.
   Follow this formatting:
   ```
-  name = loose
+  name = lose
   ```
 - Add turrets where you want to make projectiles that targets you.
 Follow this formatting:
@@ -35,7 +34,7 @@ Follow this formatting:
 - Add spawn point (starting location)
 Follow this formatting:
     ```
-    name = spawn
+    name = spawn:{starting_angle}
     ```
 - Add win point (this level ending location)
 Follow this formatting:
