@@ -12,6 +12,7 @@ from pyglet.window import key
 from cocos.actions import *
 from cursor import Cursor
 from helpers import draw_rect
+from projectile import Projectile
 from invisible_wall import InvisibleWall
 
 
@@ -77,6 +78,8 @@ class Game(cocos.layer.ScrollableLayer):
 
         self.keys_pressed = set()
 
+        self.projectiles = list()
+
         self.background = Sprite(
             image=get_background_path()
         )
@@ -95,17 +98,18 @@ class Game(cocos.layer.ScrollableLayer):
 
         self.background.position = offset
 
-        self.label = Label(
-            'x: y:',
-            font_name='Times New Roman',
-            color=(255, 0, 0, 255),
-            font_size=64,
-            anchor_x='center', anchor_y='center'
-        )
+        # self.label = Label(
+        #     'x: y:',
+        #     font_name='Times New Roman',
+        #     color=(255, 0, 0, 255),
+        #     font_size=64,
+        #     anchor_x='center', anchor_y='center'
+        # )
 
         self.add(self.background)
         self.add(self.cursor)
-        self.add(self.label)
+        # self.add(self.label)
+
         #adding stuff to the collision world
         global COL_MGR
         COL_MGR = cocos.collision_model.CollisionManagerGrid(
@@ -128,17 +132,20 @@ class Game(cocos.layer.ScrollableLayer):
         draw_rect(self.cursor.get_rect(), self)
 
     def update(self, delta):
-
         global THE_ELDER_SCROLLS_MANAGER
         THE_ELDER_SCROLLS_MANAGER.set_focus(self.cursor.position[0], self.cursor.position[1])
-        self.label.element.text = "x: {}, y: {}".format(int(self.cursor.position[0]), int(self.cursor.position[1]))
-        self.label.position = self.cursor.position[0] - 50, self.cursor.position[1] - +20
+        # self.label.element.text = "x: {}, y: {}".format(int(self.cursor.position[0]), int(self.cursor.position[1]))
+        # self.label.position = self.cursor.position[0] - 50, self.cursor.position[1] - +20
 
         for k in self.keys_pressed:
             if k == key.LEFT:
                 self.cursor.do(RotateBy(-self.cursor.angular_speed * delta, 0))
             if k == key.RIGHT:
                 self.cursor.do(RotateBy(self.cursor.angular_speed * delta, 0))
+            if k == key.SPACE:
+                projectile = Projectile((self.cursor.position[0] + 50, self.cursor.position[1] + 50), self.cursor.rotation)
+                self.projectiles.append(projectile)
+                self.add(projectile)
 
         x = (self.cursor.speed * delta) * math.sin(math.radians(self.cursor.rotation))
         y = (self.cursor.speed * delta) * math.cos(math.radians(self.cursor.rotation))
@@ -147,12 +154,32 @@ class Game(cocos.layer.ScrollableLayer):
         global COL_MGR
         global CURRENT_WALL_ARRAY
         COL_MGR.clear()# fast, no leaks even if changed cshapes
-        self.cursor.update_cshape(delta)
+        self.cursor.update_cshape()
         COL_MGR.add(self.cursor)
         for wall in CURRENT_WALL_ARRAY:
             COL_MGR.add(wall)
 
+        for p in self.projectiles:
+            p.lifetime += delta
+            if p.lifetime >= p.max_lifetime:
+                self.remove(p)
+                self.projectiles.remove(p)
+                continue
+            x = (p.speed * delta) * math.sin(math.radians(p.rotation))
+            y = (p.speed * delta) * math.cos(math.radians(p.rotation))
+            p.position = p.position[0] + x, p.position[1] + y
+            p.update_cshape()
+            COL_MGR.add(p)
+
+            for other in COL_MGR.iter_colliding(p):
+                if type(other) == InvisibleWall:
+                    self.remove(p)
+                    self.projectiles.remove(p)
+
         for other in COL_MGR.iter_colliding(self.cursor):
+            if type(other) == Projectile:
+                print("you lost")
+                sys.exit(0)
             split = other.name.split(":")
             if split[0] == "win":
                 print("you win")
@@ -161,7 +188,6 @@ class Game(cocos.layer.ScrollableLayer):
                 print("you lost")
                 sys.exit(0)
 
-        #self.debug()
     def changelevel(self, name):
         print(name)
         load_tmx("res/"+name+"/map.tmx")
@@ -170,10 +196,6 @@ class Game(cocos.layer.ScrollableLayer):
         THE_ELDER_SCROLLS_MANAGER.add(Game(name))
         main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
         director.replace(main_scene)
-
-
-
-
 
     def on_key_press(self, key, modifiers):
         """This function is called when a key is pressed.
