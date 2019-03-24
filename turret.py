@@ -17,29 +17,32 @@ class Turret():
         self.bullet_len = bullet_len
         self.speed = speed
         self.timer = delay
-        self.ammo_type = ammo_type
-        self.projectiles = []
-        self.vec_player = None
+        self.ammo_type = ammo_type# shape (characters) of the ammunitions
+        self.projectiles = [] #all the bullets it shot that are still alive
+        self.vec_player = None #a temporary variable used for inner computation
 
     def activate(self, layer, player):
+        #the zero indexing is used to pass raw reference wrapped inside an array
+        #dirty and hacky but it works just fine :)
         self.player = player[0]
         self.layer = layer[0]
 
     def update(self, delta):
-        #print("turret update, player pos x:{} y{}".format(self.player.x, self.player.y))
+        #update the logic of the turrets according to the delta time ellapsed
         self.vec_player = eu.Vector2(self.player.x, self.player.y)
+        #diff is the vector between the player and the turret
         diff = eu.Vector2(self.vec_player.x - self.pos.x, self.vec_player.y - self.pos.y)
 
-        self.timer -= delta
-        #print(self.timer)
+        self.timer -= delta#used to implement firing speed
+        #check if the player is close enough
         if self.timer <= 0 and diff.magnitude() < self.dist:
-            self.shoot(diff)
+            self.shoot(diff) #needs to be passed because we need the direction
             self.timer = self.delay
         for proj in self.projectiles:
             proj.update(delta)
 
     def shoot(self, diff):
-        #print("turret shot")
+        #spawns a bullet and adds it to the layer
         proj = Projectile(
             [self.pos.x, self.pos.y],
             self.vec_player.angle(eu.Vector2(1, 0)),
