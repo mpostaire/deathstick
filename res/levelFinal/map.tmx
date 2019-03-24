@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="1280" tileheight="1024" infinite="0" nextlayerid="3" nextobjectid="25">
+ <tileset firstgid="1" source="levelFinal.tsx"/>
+ <layer id="1" name="Calque de Tile 1" width="1" height="1">
+  <data encoding="csv">
+1
+</data>
+ </layer>
+ <objectgroup id="2" name="Calque d'objets 1">
+  <object id="1" name="lose" x="504.479" y="78.5793" width="282.885" height="56.5771"/>
+  <object id="8" name="lose" x="313.024" y="193.404" width="665.176" height="64.8407"/>
+  <object id="9" name="lose" x="429.104" y="310.629" width="432.453" height="79.9598"/>
+  <object id="10" name="lose" x="841.451" y="471.431" width="221.721" height="74.5129"/>
+  <object id="11" name="lose" x="435.446" y="622.274" width="372.201" height="77.7842"/>
+  <object id="12" name="lose" x="153.08" y="456.225" width="248.85" height="75.4091"/>
+  <object id="13" name="lose" x="598.748" y="456.979" width="104.065" height="118.392"/>
+  <object id="14" name="win:end" x="1034.21" y="836.451" width="196.419" height="121.593"/>
+  <object id="15" name="turret:I:0.25:2000:350:10" x="627.01" y="195.941" width="25.1206" height="50.2412"/>
+  <object id="16" name="spawn:90" x="453.387" y="450.779" width="27.1467" height="34.2284"/>
+  <object id="19" name="lose" x="1.77999" y="0" width="1286.93" height="8.89996"/>
+  <object id="20" name="lose" x="1276.25" y="5.33998" width="8.89996" height="1025.28"/>
+  <object id="21" name="lose" x="-5.33998" y="1016.38" width="1286.93" height="7.11997"/>
+  <object id="22" name="lose" x="-5.33998" y="-3.55999" width="8.89996" height="1035.96"/>
+  <object id="24" name="turret:o:1:2000:150:10" x="648.32" y="472.733" width="23.6367" height="42.2083"/>
+ </objectgroup>
+</map>
