@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="81" height="46" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="21">
- <tileset firstgid="1" source="tileset.tsx"/>
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="81" height="46" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="11">
+ <tileset firstgid="1" source="halcyonix.tsx"/>
+ <tileset firstgid="2" source="tileset.tsx"/>
  <layer id="1" name="Calque de Tile 1" width="81" height="46">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -53,19 +54,14 @@
  </layer>
  <objectgroup id="2" name="coll">
   <object id="1" x="650" y="29" width="587" height="284"/>
-  <object id="2" name="win:level03" x="41" y="232" width="238" height="58"/>
+  <object id="2" x="41" y="232" width="238" height="58"/>
   <object id="3" type="win:level03" x="651.5" y="558" width="84" height="20"/>
-  <object id="4" name="turret:H:0.1:100:1000:0.5" x="729" y="77" width="8" height="14"/>
-  <object id="5" name="turret:HA:0.01:200:200:0.5" x="381.5" y="321" width="8" height="14"/>
+  <object id="4" name="turret:H:0.1:300:1000:0.5" x="729" y="77" width="8" height="14"/>
+  <object id="5" name="turret:G:0.1:300:1000:0.5" x="746.5" y="223" width="8" height="14"/>
   <object id="6" x="650" y="29" width="587" height="284"/>
-  <object id="7" name="turret:y:0.1:100:1000:0.5" x="914" y="198.5" width="8" height="14"/>
-  <object id="8" name="turret:S:0.1:500:500:1" x="947" y="76.5" width="8" height="14"/>
-  <object id="9" name="turret:y:0.1:100:1000:0.5" x="1076" y="99.5" width="8" height="14"/>
-  <object id="10" name="turret:S:0.1:100:1000:0.5" x="1106" y="75.5" width="8" height="14"/>
-  <object id="11" name="spawn:0" x="1212.5" y="348" width="21" height="16.5"/>
-  <object id="13" name="turret:G:0.1:300:50:1" x="748.5" y="400" width="8" height="14"/>
-  <object id="15" name="turret:HA:0.01:200:200:0.5" x="958.333" y="558.5" width="8" height="14"/>
-  <object id="16" name="turret:C:0.1:500:500:1" x="565.333" y="484.667" width="22.6667" height="24"/>
-  <object id="17" x="370" y="391" width="562.667" height="159"/>
+  <object id="7" name="turret:y:0.1:300:1000:0.5" x="914" y="198.5" width="8" height="14"/>
+  <object id="8" name="turret:S:0.1:300:1000:0.5" x="947" y="76.5" width="8" height="14"/>
+  <object id="9" name="turret:y:0.1:300:1000:0.5" x="1076" y="99.5" width="8" height="14"/>
+  <object id="10" name="turret:S:0.1:300:1000:0.5" x="1106" y="75.5" width="8" height="14"/>
  </objectgroup>
 </map>
