@@ -53,7 +53,7 @@
  </layer>
  <objectgroup id="2" name="coll">
   <object id="1" x="650" y="29" width="587" height="284"/>
-  <object id="2" name="win:level03" x="41" y="232" width="238" height="58"/>
+  <object id="2" name="win:levelFinal" x="41" y="232" width="238" height="58"/>
   <object id="3" type="win:level03" x="651.5" y="558" width="84" height="20"/>
   <object id="4" name="turret:H:0.1:100:1000:0.5" x="729" y="77" width="8" height="14"/>
   <object id="5" name="turret:HA:0.01:200:200:0.5" x="381.5" y="321" width="8" height="14"/>
@@ -62,7 +62,7 @@
   <object id="8" name="turret:S:0.1:500:500:1" x="947" y="76.5" width="8" height="14"/>
   <object id="9" name="turret:y:0.1:100:1000:0.5" x="1076" y="99.5" width="8" height="14"/>
   <object id="10" name="turret:S:0.1:100:1000:0.5" x="1106" y="75.5" width="8" height="14"/>
-  <object id="11" name="spawn:0" x="1212.5" y="348" width="21" height="16.5"/>
+  <object id="11" name="spawn:270" x="1212.5" y="348" width="21" height="16.5"/>
   <object id="13" name="turret:G:0.1:300:50:1" x="748.5" y="400" width="8" height="14"/>
   <object id="15" name="turret:HA:0.01:200:200:0.5" x="958.333" y="558.5" width="8" height="14"/>
   <object id="16" name="turret:C:0.1:500:500:1" x="565.333" y="484.667" width="22.6667" height="24"/>
