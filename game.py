@@ -9,10 +9,10 @@ from pyglet.window import key
 from cocos.actions import *
 import math
 
-
 CURRENT_TMX = None
 CURRENT_WALL_ARRAY = None
 THE_ELDER_SCROLLS_MANAGER = None
+BACKGROUND_RECT = None
 
 
 def get_path(file):
@@ -35,11 +35,16 @@ def get_background_path():
 def load_wall_array():
     global CURRENT_WALL_ARRAY
     global CURRENT_TMX
+    global BACKGROUND_RECT
     CURRENT_WALL_ARRAY = list()
     for object in CURRENT_TMX.objects:
-        rect = cocos.Rect(object.x, object.y, object.width, object.height)
+        top_left_y = object.y
+        bottom_left_y = BACKGROUND_RECT.height - object.height - top_left_y
+
+        rect = cocos.rect.Rect(object.x, bottom_left_y, object.width, object.height)
         CURRENT_WALL_ARRAY.append(rect)
 
+#the background is offset in regard with the collision boxes
 
 class HelloWorld(cocos.layer.ScrollableLayer):
     is_event_handler = True
@@ -58,26 +63,73 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         self.background = cocos.sprite.Sprite(
             image=get_background_path()
         )
+        #à cacher
+        global BACKGROUND_RECT
+        BACKGROUND_RECT = self.background.get_rect()
+        rect = BACKGROUND_RECT
+        offset = rect.width/2, rect.height/2
+        load_wall_array()
+        ##
+
+        self.background.position = offset
         self.cursor.position = 10, director.get_window_size()[1] - 10
         self.cursor.velocity = 0, 0
 
         self.label = cocos.text.Label(
             'x: y:',
             font_name='Times New Roman',
-            font_size=12,
+            color=(255, 0, 0, 255),
+            font_size=64,
             anchor_x='center', anchor_y='center'
         )
+
+
         self.add(self.background)
         self.add(self.cursor)
         self.add(self.label)
-
+        #à mettre dans une fonction debug
+        global CURRENT_WALL_ARRAY
+        for rect in CURRENT_WALL_ARRAY:
+            lab = cocos.text.Label('G',
+                                   font_name='Times New Roman',
+                                   color=(255, 0, 0, 255),
+                                   font_size=32,
+                                   anchor_x="center", anchor_y='center'
+                                   )
+            lab.position = rect.get_origin()
+            self.add(lab)
+            lab = cocos.text.Label('G',
+                                   font_name='Times New Roman',
+                                   color=(255, 0, 0, 255),
+                                   font_size=32,
+                                   anchor_x="center", anchor_y='center'
+                                   )
+            lab.position = rect.x + rect.width, rect.y
+            self.add(lab)
+            lab = cocos.text.Label('G',
+                                   font_name='Times New Roman',
+                                   color=(255, 0, 0, 255),
+                                   font_size=32,
+                                   anchor_x="center", anchor_y='center'
+                                   )
+            lab.position = rect.x + rect.width, rect.y + rect.height
+            self.add(lab)
+            lab = cocos.text.Label('G',
+                                   font_name='Times New Roman',
+                                   color=(255, 0, 0, 255),
+                                   font_size=32,
+                                   anchor_x="center", anchor_y='center'
+                                   )
+            lab.position = rect.x, rect.y + rect.height
+            self.add(lab)
+        ##
         self.schedule(self.update)
 
     def update(self, delta):
         global THE_ELDER_SCROLLS_MANAGER
         THE_ELDER_SCROLLS_MANAGER.set_focus(self.cursor.position[0], self.cursor.position[1])
         self.label.element.text = "x: {}, y: {}".format(int(self.cursor.position[0]), int(self.cursor.position[1]))
-        self.label.position = self.cursor.position[0], self.cursor.position[1] - 10
+        self.label.position = self.cursor.position[0] - 50, self.cursor.position[1] - +20
 
         for k in self.keys_pressed:
             if k == key.LEFT:
@@ -112,8 +164,10 @@ class HelloWorld(cocos.layer.ScrollableLayer):
 
 if __name__ == '__main__':
     director.init(width=800, height=600)
+    #setting up the map
     load_tmx("ressources/testmap/map.tmx")
     THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
+    THE_ELDER_SCROLLS_MANAGER.scale = 0.25
 
     THE_ELDER_SCROLLS_MANAGER.add(HelloWorld())
     THE_ELDER_SCROLLS_MANAGER.set_focus(10, director.get_window_size()[1] - 10)
