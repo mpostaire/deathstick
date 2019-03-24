@@ -5,6 +5,8 @@ import cocos
 
 from cocos.scene import Scene
 from cocos.director import director
+from cocos.text import Label
+from cocos.sprite import Sprite
 from pyglet.window import key
 from cocos.actions import *
 import cocos.collision_model as cm
@@ -77,32 +79,30 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         self.keys_pressed = set()
 
         self.cursor = Cursor(
-            "cursor.png",
+            "res/cursor.png",
             10, director.get_window_size()[1] - 10,
             0,
         )
 
-        self.background = cocos.sprite.Sprite(
+        self.background = Sprite(
             image=get_background_path()
         )
         #à cacher
         global BACKGROUND_RECT
         BACKGROUND_RECT = self.background.get_rect()
-        rect = BACKGROUND_RECT
-        offset = rect.width/2, rect.height/2
+        offset = BACKGROUND_RECT.width/2, BACKGROUND_RECT.height/2
         load_wall_array()
         ##
 
         self.background.position = offset
 
-        self.label = cocos.text.Label(
+        self.label = Label(
             'x: y:',
             font_name='Times New Roman',
             color=(255, 0, 0, 255),
             font_size=64,
             anchor_x='center', anchor_y='center'
         )
-
 
         self.add(self.background)
         self.add(self.cursor)
@@ -116,13 +116,20 @@ class HelloWorld(cocos.layer.ScrollableLayer):
             16,
             16
         )
-        global CURRENT_WALL_ARRAY
-        for rect in CURRENT_WALL_ARRAY:
 
+        for rect in CURRENT_WALL_ARRAY:
             COL_MGR.add(InvisibleWall(rect))
         COL_MGR.add(self.cursor)
-        ##
+
+        self.debug()
+
         self.schedule(self.update)
+
+    def debug(self):
+        global CURRENT_WALL_ARRAY
+        for rect in CURRENT_WALL_ARRAY:
+            draw_rect(rect, self)
+        draw_rect(self.background.get_rect(), self)
 
     def update(self, delta):
         global THE_ELDER_SCROLLS_MANAGER
@@ -139,7 +146,7 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         x = (self.cursor.speed * delta) * math.sin(math.radians(self.cursor.rotation))
         y = (self.cursor.speed * delta) * math.cos(math.radians(self.cursor.rotation))
         self.cursor.position = self.cursor.position[0] + x, self.cursor.position[1] + y
-        
+
 
     def on_key_press(self, key, modifiers):
         """This function is called when a key is pressed.
@@ -161,20 +168,39 @@ class HelloWorld(cocos.layer.ScrollableLayer):
 
         self.keys_pressed.remove(key)
 
+def draw_rect(rect, layer):
+    # bottom line
+    line = cocos.draw.Line(rect.get_origin(),
+                           (rect.x + rect.width, rect.y),
+                           (255, 0, 0, 255), 5)
+    layer.add(line)
+
+    # top line
+    line = cocos.draw.Line((rect.x + rect.width, rect.y + rect.height),
+                           (rect.x, rect.y + rect.height),
+                           (255, 0, 0, 255), 5)
+    layer.add(line)
+
+    # left line
+    line = cocos.draw.Line(rect.get_origin(),
+                           (rect.x, rect.y + rect.height),
+                           (255, 0, 0, 255), 5)
+    layer.add(line)
+
+    # right line
+    line = cocos.draw.Line((rect.x + rect.width, rect.y),
+                           (rect.x + rect.width, rect.y + rect.height),
+                           (255, 0, 0, 255), 5)
+    layer.add(line)
 
 if __name__ == '__main__':
     director.init(width=800, height=600)
     #setting up the map
-    load_tmx("ressources/testmap/map.tmx")
+    load_tmx("res/testmap/map.tmx")
     THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
     THE_ELDER_SCROLLS_MANAGER.scale = 0.25
-    #game setup stuff
-    # colliding stuff i guess
 
-    #
     THE_ELDER_SCROLLS_MANAGER.add(HelloWorld())
     THE_ELDER_SCROLLS_MANAGER.set_focus(10, director.get_window_size()[1] - 10)
-
-
     main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
     director.run(main_scene)
