@@ -140,7 +140,7 @@ class Game(cocos.layer.ScrollableLayer):
             16
         )
 
-        self.debug()
+        # self.debug()
         self.schedule(self.update)
 
     def debug(self):
