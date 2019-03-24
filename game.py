@@ -1,17 +1,18 @@
-import os
-
 import pytmx
 import cocos
+import math
 
-from cocos.scene import Scene
 from cocos.director import director
-from cocos.text import Label
 from cocos.sprite import Sprite
+from cocos.text import Label
 from pyglet.window import key
 from cocos.actions import *
 import cocos.collision_model as cm
-import cocos.euclid as eu
-import math
+from cocos.scene import Scene
+
+from invisible_wall import InvisibleWall
+from cursor import Cursor
+from helpers import draw_rect
 
 CURRENT_TMX = None
 CURRENT_WALL_ARRAY = None
@@ -20,63 +21,15 @@ BACKGROUND_RECT = None
 COL_MGR = None
 
 
-def get_path(file):
-    return os.path.join(
-        os.path.dirname(__file__),
-        file)
-
-
-def load_tmx(map_string):
-    global CURRENT_TMX
-    CURRENT_TMX = pytmx.TiledMap(map_string)
-
-
-def get_background_path():
-    global CURRENT_TMX
-    print(CURRENT_TMX.get_tile_image_by_gid(1)[0])
-    return CURRENT_TMX.get_tile_image_by_gid(1)[0]
-
-
-def load_wall_array():
-    global CURRENT_WALL_ARRAY
-    global CURRENT_TMX
-    global BACKGROUND_RECT
-    CURRENT_WALL_ARRAY = list()
-    for object in CURRENT_TMX.objects:
-        top_left_y = object.y
-        bottom_left_y = BACKGROUND_RECT.height - object.height - top_left_y
-
-        rect = cocos.rect.Rect(object.x, bottom_left_y, object.width, object.height)
-        CURRENT_WALL_ARRAY.append(rect)
-
-#the background is offset in regard with the collision boxes
-
-class Cursor(cocos.sprite.Sprite):
-    def __init__(self, image, center_x, center_y, radius):
-        super(Cursor, self).__init__(image)
-        self.position = 350, 350
-        self.speed = 200
-        self.angular_speed = 150
-        self.rotation = 90
-        self.velocity = 0, 0
-        self.position = (center_x, center_y)
-        vec_center= eu.Vector2(self.x + self.width/2, self.y + self.height/2)
-        self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.width/2, half_height=self.height/2)
-
-class InvisibleWall():
-    def __init__(self, rect):
-        vec_center = eu.Vector2(rect.x + rect.width/2, rect.y + rect.height/2)
-        self.cshape = cocos.collision_model.AARectShape(vec_center,  half_width=rect.width / 2,
-                                                        half_height=rect.height / 2
-                                                        )
-
-
-class HelloWorld(cocos.layer.ScrollableLayer):
+class Game(cocos.layer.ScrollableLayer):
     is_event_handler = True
 
     def __init__(self):
-        super(HelloWorld, self).__init__()
+        super(Game, self).__init__()
         self.keys_pressed = set()
+
+        # setting up the map
+        load_tmx("res/testmap/map.tmx")
 
         self.cursor = Cursor(
             "res/cursor.png",
@@ -108,7 +61,7 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         self.add(self.cursor)
         self.add(self.label)
         #adding stuff to the collision world
-        COL_MGR = cocos.collision_model.CollisionManagerGrid(
+        COL_MGR = cm.CollisionManagerGrid(
             BACKGROUND_RECT.x + BACKGROUND_RECT.width/2,
             BACKGROUND_RECT.x + 3*BACKGROUND_RECT.width/2,
             BACKGROUND_RECT.y + BACKGROUND_RECT.height/2,
@@ -124,12 +77,6 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         self.debug()
 
         self.schedule(self.update)
-
-    def debug(self):
-        global CURRENT_WALL_ARRAY
-        for rect in CURRENT_WALL_ARRAY:
-            draw_rect(rect, self)
-        draw_rect(self.background.get_rect(), self)
 
     def update(self, delta):
         global THE_ELDER_SCROLLS_MANAGER
@@ -147,6 +94,11 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         y = (self.cursor.speed * delta) * math.cos(math.radians(self.cursor.rotation))
         self.cursor.position = self.cursor.position[0] + x, self.cursor.position[1] + y
 
+    def debug(self):
+        global CURRENT_WALL_ARRAY
+        for rect in CURRENT_WALL_ARRAY:
+            draw_rect(rect, self)
+        draw_rect(self.background.get_rect(), self)
 
     def on_key_press(self, key, modifiers):
         """This function is called when a key is pressed.
@@ -168,39 +120,37 @@ class HelloWorld(cocos.layer.ScrollableLayer):
 
         self.keys_pressed.remove(key)
 
-def draw_rect(rect, layer):
-    # bottom line
-    line = cocos.draw.Line(rect.get_origin(),
-                           (rect.x + rect.width, rect.y),
-                           (255, 0, 0, 255), 5)
-    layer.add(line)
 
-    # top line
-    line = cocos.draw.Line((rect.x + rect.width, rect.y + rect.height),
-                           (rect.x, rect.y + rect.height),
-                           (255, 0, 0, 255), 5)
-    layer.add(line)
+def load_tmx(map_string):
+    global CURRENT_TMX
+    CURRENT_TMX = pytmx.TiledMap(map_string)
 
-    # left line
-    line = cocos.draw.Line(rect.get_origin(),
-                           (rect.x, rect.y + rect.height),
-                           (255, 0, 0, 255), 5)
-    layer.add(line)
 
-    # right line
-    line = cocos.draw.Line((rect.x + rect.width, rect.y),
-                           (rect.x + rect.width, rect.y + rect.height),
-                           (255, 0, 0, 255), 5)
-    layer.add(line)
+def get_background_path():
+    global CURRENT_TMX
+    print(CURRENT_TMX.get_tile_image_by_gid(1)[0])
+    return CURRENT_TMX.get_tile_image_by_gid(1)[0]
+
+
+def load_wall_array():
+    global CURRENT_WALL_ARRAY
+    global CURRENT_TMX
+    global BACKGROUND_RECT
+    CURRENT_WALL_ARRAY = list()
+    for object in CURRENT_TMX.objects:
+        top_left_y = object.y
+        bottom_left_y = BACKGROUND_RECT.height - object.height - top_left_y
+
+        rect = cocos.rect.Rect(object.x, bottom_left_y, object.width, object.height)
+        CURRENT_WALL_ARRAY.append(rect)
+
 
 if __name__ == '__main__':
     director.init(width=800, height=600)
-    #setting up the map
-    load_tmx("res/testmap/map.tmx")
     THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
     THE_ELDER_SCROLLS_MANAGER.scale = 0.25
 
-    THE_ELDER_SCROLLS_MANAGER.add(HelloWorld())
+    THE_ELDER_SCROLLS_MANAGER.add(Game())
     THE_ELDER_SCROLLS_MANAGER.set_focus(10, director.get_window_size()[1] - 10)
     main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
     director.run(main_scene)
