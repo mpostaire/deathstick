@@ -21,7 +21,7 @@ It's very easy just let me introduce you to our **beautiful** work.
 - Add turrets where you want to make projectiles that targets you.
 Follow this formatting:
     ```
-    name = turret:{char}:{firing_delay}:{target_range}:{projectile_speed}
+    name = turret:{char}:{firing_delay}:{target_range}:{projectile_speed}:{projectile_lifetime}
     ```
 - Add spawn point (starting location)
 Follow this formatting:

@@ -167,14 +167,7 @@ class Game(cocos.layer.ScrollableLayer):
             if k == key.RIGHT:
                 self.cursor.do(RotateBy(self.cursor.angular_speed * delta, 0))
             if k == key.SPACE:
-                projectile = Projectile(
-                    (self.cursor.position[0] + 50, self.cursor.position[1] + 50),
-                    self.cursor.rotation,
-                    [self],
-                    None
-                )
-                self.projectiles.append(projectile)
-                self.add(projectile)
+                pass
 
         x = (self.cursor.speed * delta) * math.sin(math.radians(self.cursor.rotation))
         y = (self.cursor.speed * delta) * math.cos(math.radians(self.cursor.rotation))

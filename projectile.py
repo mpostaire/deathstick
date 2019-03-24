@@ -1,5 +1,3 @@
-import string
-import random
 import time
 import cocos
 import math
@@ -9,10 +7,10 @@ import cocos.collision_model
 
 
 class Projectile(Label):
-    def __init__(self, position, rotation, layer, speed_wagon):
+    def __init__(self, position, rotation, layer, speed_wagon, char):
         self.size = 16
         super(Label, self).__init__(
-            random.choice(string.ascii_lowercase),
+            char,
             font_name='Times New Roman',
             color=(0, 0, 255, 255),
             font_size=self.size,
@@ -44,12 +42,9 @@ class Projectile(Label):
             self.remove()
             self.turret.projectiles.remove(self)
             return
-        if self.turret is not None:
-            x = (self.speed * delta) * self.speed_vec.x
-            y = (self.speed * delta) * self.speed_vec.y
-        else:
-            x = (self.speed * delta) * math.sin(math.radians(self.rotation))
-            y = (self.speed * delta) * math.cos(math.radians(self.rotation))
+
+        x = (self.speed * delta) * self.speed_vec.x
+        y = (self.speed * delta) * self.speed_vec.y
         self.position = self.position[0] + x, self.position[1] + y
         self.update_cshape()
 

@@ -10,7 +10,7 @@ import cocos.euclid as eu
 
 class Turret():
 
-    def __init__(self, pos, delay, dist, speed,  ammo_type):
+    def __init__(self, pos, delay, dist, speed, ammo_type):
         self.pos = eu.Vector2(pos[0], pos[1])
         self.delay = delay
         self.dist = dist
@@ -43,7 +43,8 @@ class Turret():
             [self.pos.x, self.pos.y],
             self.vec_player.angle(eu.Vector2(1, 0)),
             [self.layer],
-            diff
+            diff,
+            self.ammo_type
         )
         proj.turret = self
         self.projectiles.append(proj)

@@ -75,8 +75,8 @@
   <object id="10" x="1277.27" y="2.72727" width="27.8182" height="922.182"/>
   <object id="11" x="-9.45455" y="-0.727273" width="1328" height="16"/>
   <object id="14" name="spawn" x="285.333" y="660.667" width="12.6667" height="12"/>
-  <object id="15" name="turret:g:0.5:400:10" x="79.3333" y="304" width="17.3333" height="27.3333"/>
+  <object id="15" name="turret:G:0.5:400:10" x="79.3333" y="304" width="17.3333" height="27.3333"/>
   <object id="18" type="turret:o" x="733.333" y="626.667"/>
-  <object id="20" name="turret:g:0.5:400:10" x="222" y="306.333" width="17.3333" height="27.3333"/>
+  <object id="20" name="turret:e:0.5:400:10" x="222" y="306.333" width="17.3333" height="27.3333"/>
  </objectgroup>
 </map>
