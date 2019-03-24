@@ -11,5 +11,16 @@ class Cursor(cocos.sprite.Sprite):
         self.rotation = 90
         self.velocity = 0, 0
         self.position = (center_x, center_y)
-        vec_center = eu.Vector2(self.x + self.width/2, self.y + self.height/2)
-        self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.width/2, half_height=self.height/2)
+        vec_center = eu.Vector2(self.x , self.y )
+        self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.width / 4,
+                                                        half_height=self.height / 4)
+
+    def update_cshape(self, delta):
+        vec_center = eu.Vector2(self.x ,
+                                self.y ,
+                                )
+        self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.width / 4,
+
+                                                        half_height=self.height / 4)
+    def get_rect(self):
+        return cocos.rect.Rect(self.x - self.width/2, self.y - self.width/2, self.width, self.height)
