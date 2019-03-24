@@ -7,12 +7,15 @@ from cocos.scene import Scene
 from cocos.director import director
 from pyglet.window import key
 from cocos.actions import *
+import cocos.collision_model as cm
+import cocos.euclid as eu
 import math
 
 CURRENT_TMX = None
 CURRENT_WALL_ARRAY = None
 THE_ELDER_SCROLLS_MANAGER = None
 BACKGROUND_RECT = None
+COL_MGR = None
 
 
 def get_path(file):
@@ -46,6 +49,26 @@ def load_wall_array():
 
 #the background is offset in regard with the collision boxes
 
+class Cursor(cocos.sprite.Sprite):
+    def __init__(self, image, center_x, center_y, radius):
+        super(Cursor, self).__init__(image)
+        self.position = 350, 350
+        self.speed = 200
+        self.angular_speed = 150
+        self.rotation = 90
+        self.velocity = 0, 0
+        self.position = (center_x, center_y)
+        vec_center= eu.Vector2(self.x + self.width/2, self.y + self.height/2)
+        self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.width/2, half_height=self.height/2)
+
+class InvisibleWall():
+    def __init__(self, rect):
+        vec_center = eu.Vector2(rect.x + rect.width/2, rect.y + rect.height/2)
+        self.cshape = cocos.collision_model.AARectShape(vec_center,  half_width=rect.width / 2,
+                                                        half_height=rect.height / 2
+                                                        )
+
+
 class HelloWorld(cocos.layer.ScrollableLayer):
     is_event_handler = True
 
@@ -53,13 +76,12 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         super(HelloWorld, self).__init__()
         self.keys_pressed = set()
 
-        self.cursor = cocos.sprite.Sprite(
-            image="cursor.png"
+        self.cursor = Cursor(
+            "cursor.png",
+            10, director.get_window_size()[1] - 10,
+            0,
         )
-        self.cursor.position = 350, 350
-        self.cursor.speed = 200
-        self.cursor.angular_speed = 150
-        self.cursor.rotation = 90
+
         self.background = cocos.sprite.Sprite(
             image=get_background_path()
         )
@@ -72,8 +94,6 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         ##
 
         self.background.position = offset
-        self.cursor.position = 10, director.get_window_size()[1] - 10
-        self.cursor.velocity = 0, 0
 
         self.label = cocos.text.Label(
             'x: y:',
@@ -87,41 +107,20 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         self.add(self.background)
         self.add(self.cursor)
         self.add(self.label)
-        #à mettre dans une fonction debug
+        #adding stuff to the collision world
+        COL_MGR = cocos.collision_model.CollisionManagerGrid(
+            BACKGROUND_RECT.x + BACKGROUND_RECT.width/2,
+            BACKGROUND_RECT.x + 3*BACKGROUND_RECT.width/2,
+            BACKGROUND_RECT.y + BACKGROUND_RECT.height/2,
+            BACKGROUND_RECT.y + 3*BACKGROUND_RECT.height / 2,
+            16,
+            16
+        )
         global CURRENT_WALL_ARRAY
         for rect in CURRENT_WALL_ARRAY:
-            lab = cocos.text.Label('G',
-                                   font_name='Times New Roman',
-                                   color=(255, 0, 0, 255),
-                                   font_size=32,
-                                   anchor_x="center", anchor_y='center'
-                                   )
-            lab.position = rect.get_origin()
-            self.add(lab)
-            lab = cocos.text.Label('G',
-                                   font_name='Times New Roman',
-                                   color=(255, 0, 0, 255),
-                                   font_size=32,
-                                   anchor_x="center", anchor_y='center'
-                                   )
-            lab.position = rect.x + rect.width, rect.y
-            self.add(lab)
-            lab = cocos.text.Label('G',
-                                   font_name='Times New Roman',
-                                   color=(255, 0, 0, 255),
-                                   font_size=32,
-                                   anchor_x="center", anchor_y='center'
-                                   )
-            lab.position = rect.x + rect.width, rect.y + rect.height
-            self.add(lab)
-            lab = cocos.text.Label('G',
-                                   font_name='Times New Roman',
-                                   color=(255, 0, 0, 255),
-                                   font_size=32,
-                                   anchor_x="center", anchor_y='center'
-                                   )
-            lab.position = rect.x, rect.y + rect.height
-            self.add(lab)
+
+            COL_MGR.add(InvisibleWall(rect))
+        COL_MGR.add(self.cursor)
         ##
         self.schedule(self.update)
 
@@ -140,6 +139,7 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         x = (self.cursor.speed * delta) * math.sin(math.radians(self.cursor.rotation))
         y = (self.cursor.speed * delta) * math.cos(math.radians(self.cursor.rotation))
         self.cursor.position = self.cursor.position[0] + x, self.cursor.position[1] + y
+        
 
     def on_key_press(self, key, modifiers):
         """This function is called when a key is pressed.
@@ -168,8 +168,13 @@ if __name__ == '__main__':
     load_tmx("ressources/testmap/map.tmx")
     THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
     THE_ELDER_SCROLLS_MANAGER.scale = 0.25
+    #game setup stuff
+    # colliding stuff i guess
 
+    #
     THE_ELDER_SCROLLS_MANAGER.add(HelloWorld())
     THE_ELDER_SCROLLS_MANAGER.set_focus(10, director.get_window_size()[1] - 10)
+
+
     main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
     director.run(main_scene)
