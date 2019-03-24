@@ -56,7 +56,7 @@ class HelloWorld(cocos.layer.ScrollableLayer):
         self.keys_pressed = set()
 
         self.cursor = Sprite(
-            image="cursor.png",
+            image="res/cursor.png",
             position=(350, 350),
             rotation=180
         )
@@ -162,7 +162,7 @@ def draw_rect(rect, layer):
 if __name__ == '__main__':
     director.init(width=800, height=600)
     #setting up the map
-    load_tmx("ressources/testmap/map.tmx")
+    load_tmx("res/testmap/map.tmx")
     THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
     THE_ELDER_SCROLLS_MANAGER.scale = 0.25
 
