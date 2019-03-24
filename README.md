@@ -20,7 +20,7 @@ It's very easy just let me introduce you to our **beautiful** work.
  saved in your level's directory.
 - Click the background in the tileset bar
 - Place it on the bottom left corner.
-- Now you can place the game objects, in the calc menu create a new object calq
+- Now you can place the game objects, in the layer menu create a new object layer
 -
 - Add object rectangles where you want to make walls that kills you.
   Follow this formatting:
