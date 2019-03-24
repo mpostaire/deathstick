@@ -14,7 +14,8 @@ class Projectile(Label):
             font_name='Times New Roman',
             color=(0, 0, 255, 255),
             font_size=self.size,
-            anchor_x='center', anchor_y='center'
+            anchor_x='center', anchor_y='center',
+            bold=True
         )
         self.creation_time = time.time()
         self.lifetime = 0.0
