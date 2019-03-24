@@ -35,7 +35,7 @@ Follow this formatting:
 - Add spawn point (starting location)
 Follow this formatting:
     ```
-    name = spawn
+    name = spawn:{starting_angle}
     ```
 - Add win point (this level ending location)
 Follow this formatting:

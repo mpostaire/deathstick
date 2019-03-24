@@ -66,7 +66,7 @@ def load_wall_array():
         wall = InvisibleWall(rect, object.name)
         split = wall.name.split(":")
         if split[0] == "spawn":
-            SPAWN = [bottom_left_x, bottom_left_y]
+            SPAWN = [bottom_left_x, bottom_left_y, float(split[1])]
         elif split[0] == "turret":
             print(split) #pos, delay, dist, speed, ammo
             DELAYED_ARRAY.append(
@@ -109,7 +109,7 @@ class Game(cocos.layer.ScrollableLayer):
         global SPAWN
         self.cursor = Cursor(
             "res/cursor.png",
-            SPAWN[0], SPAWN[1],
+            SPAWN[0], SPAWN[1], SPAWN[2]
         )
         ##
 
