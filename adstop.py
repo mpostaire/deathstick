@@ -15,17 +15,20 @@ class AdStop(cocos.sprite.Sprite):
             self.opacity = 255
         if self.cursor.shielded:
             self.setCursorPosition()
+            self.rotation = self.cursor.rotation
         else:
             self.setHudPosition()
 
     def activate(self):
         if self.elapsed_time >= self.charging_time:
             self.cursor.shielded = True
+            self.rotation = self.cursor.rotation
             self.setCursorPosition()
 
     def reset(self):
         self.cursor.shielded = False
         self.opacity = 100
+        self.rotation = 0
         self.elapsed_time = 0
 
     def setHudPosition(self):
