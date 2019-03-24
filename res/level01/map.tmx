@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="1296" tileheight="736" infinite="0" nextlayerid="3" nextobjectid="4">
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="1296" tileheight="736" infinite="0" nextlayerid="3" nextobjectid="8">
  <tileset firstgid="1" source="tileset.tsx"/>
  <layer id="1" name="Calque de Tile 1" width="1" height="1">
   <data encoding="csv">
@@ -10,5 +10,9 @@
   <object id="1" name="spawn:90" x="58" y="64" width="43" height="42"/>
   <object id="2" name="turret:Avoid me:1:2000:20:5" x="304" y="166" width="17" height="11"/>
   <object id="3" name="win:level02" x="430" y="404" width="360" height="102"/>
+  <object id="4" x="-2" y="-3" width="1300" height="12"/>
+  <object id="5" x="1289" y="-7" width="20" height="749"/>
+  <object id="6" x="-9" y="730" width="1312" height="24"/>
+  <object id="7" x="-10" y="-24" width="18" height="785"/>
  </objectgroup>
 </map>

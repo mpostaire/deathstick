@@ -238,7 +238,7 @@ if __name__ == '__main__':
     #setting up the map
     load_tmx("res/level01/map.tmx")
     THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
-    THE_ELDER_SCROLLS_MANAGER.scale = 1.0
+    THE_ELDER_SCROLLS_MANAGER.scale = 0.8
     game = Game("")
     THE_ELDER_SCROLLS_MANAGER.add(game)
     main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
