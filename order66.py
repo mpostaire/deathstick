@@ -151,18 +151,18 @@ class Game(cocos.layer.ScrollableLayer):
 
         # self.debug()
         self.schedule(self.update)
-
+    #used to draw collisions boxes etc
     def debug(self):
         global CURRENT_WALL_ARRAY
         for rect in CURRENT_WALL_ARRAY:
             draw_rect(rect.rect, self)
 
         draw_rect(self.cursor.get_rect(), self)
-
+    #holds logic
     def update(self, delta):
         if self.cursor.bullettime:
             delta *= 0.5
-
+        #reacting to keypresses
         for k in self.keys_pressed:
             if k == key.LEFT:
                 self.cursor.do(RotateBy(-self.cursor.angular_speed * delta, 0))
@@ -186,7 +186,7 @@ class Game(cocos.layer.ScrollableLayer):
         global DELAYED_ARRAY
 
         COL_MGR.clear()# fast, no leaks even if changed cshapes
-        COL_MGR.add(self.cursor)
+        COL_MGR.add(self.cursor)#it's the way internet says it has to be done
         for delayed in DELAYED_ARRAY:
             delayed.update(delta)
             if type(delayed) == Turret:
