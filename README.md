@@ -9,6 +9,7 @@ To launch the game, open a terminal in the game folder and execute `python order
 ## dependencies
 - python >= 3.7.1
 - cocos2d
+- pytmx
 
 ## Modding API
 You can make your custom made map. 
