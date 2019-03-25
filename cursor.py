@@ -4,8 +4,8 @@ import cocos.euclid as eu
 
 
 class Cursor(cocos.sprite.Sprite):
-    def __init__(self, image, spawn_coords):
-        super(Cursor, self).__init__(image)
+    def __init__(self, spawn_coords):
+        super(Cursor, self).__init__("res/cursor.png")
         self.speed = 200
         self.angular_speed = 150
         self.rotation = spawn_coords[2]

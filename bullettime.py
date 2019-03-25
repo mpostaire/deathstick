@@ -2,10 +2,10 @@ import cocos
 
 
 class BulletTime(cocos.sprite.Sprite):
-    def __init__(self, image, cursor):
-        super(BulletTime, self).__init__(image, opacity=100)
+    def __init__(self, cursor):
+        super(BulletTime, self).__init__("res/bullet_time.png", opacity=100)
         self.cursor = cursor
-        self.setHudPosition()
+        self.set_hud_position()
         self.charging_time = 3.0  # time this power needs to recharge (in seconds)
         self.elapsed_time = 0.0  # time since last power activation/deactivation (in seconds)
         self.duration = 1.0  # duration of this power (in seconds)
@@ -19,7 +19,7 @@ class BulletTime(cocos.sprite.Sprite):
             self.reset()  # if bullet_time power ended, reset
         elif not self.cursor.bullettime and self.elapsed_time >= self.charging_time:
             self.opacity = 255  # if bullet_time power available, highlight it
-        self.setHudPosition()
+        self.set_hud_position()
 
     def activate(self):
         if self.elapsed_time >= self.charging_time:
@@ -32,7 +32,7 @@ class BulletTime(cocos.sprite.Sprite):
         self.opacity = 100
         self.elapsed_time = 0
 
-    def setHudPosition(self):
+    def set_hud_position(self):
         window_size = cocos.director.director.get_window_size()
         self.position = (self.cursor.position[0] - window_size[0] / 2 + 20,
                          self.cursor.position[1] + window_size[1] / 2 - 60)

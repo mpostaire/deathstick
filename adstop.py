@@ -2,12 +2,12 @@ import cocos
 
 
 class AdStop(cocos.sprite.Sprite):
-    def __init__(self, image, position, cursor):
-        super(AdStop, self).__init__(image, opacity=100)
-        self.position = position
+    def __init__(self, cursor):
+        super(AdStop, self).__init__("res/adstop.png", opacity=100)
         self.charging_time = 2.0  # time this power needs to recharge (in seconds)
         self.elapsed_time = 0.0  # time since last power deactivation (in seconds)
         self.cursor = cursor
+        self.set_hud_position()
 
     def act(self, delta):
         if self.cursor.bullettime:
@@ -17,16 +17,16 @@ class AdStop(cocos.sprite.Sprite):
         if self.elapsed_time >= self.charging_time:  # if this power available, highlight it
             self.opacity = 255
         if self.cursor.shielded:
-            self.setCursorPosition()
+            self.set_cursor_position()
             self.rotation = self.cursor.rotation
         else:
-            self.setHudPosition()
+            self.set_hud_position()
 
     def activate(self):
         if self.elapsed_time >= self.charging_time:
             self.cursor.shielded = True
             self.rotation = self.cursor.rotation
-            self.setCursorPosition()
+            self.set_cursor_position()
 
     def reset(self):
         self.cursor.shielded = False
@@ -34,11 +34,11 @@ class AdStop(cocos.sprite.Sprite):
         self.rotation = 0
         self.elapsed_time = 0
 
-    def setHudPosition(self):
+    def set_hud_position(self):
         window_size = cocos.director.director.get_window_size()
         self.position = (self.cursor.position[0] - window_size[0] / 2 + 20,
                          self.cursor.position[1] + window_size[1] / 2 - 20)
 
-    def setCursorPosition(self):
+    def set_cursor_position(self):
         self.position = self.cursor.position
         self.opacity = 100

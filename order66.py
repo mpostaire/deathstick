@@ -17,10 +17,7 @@ from invisible_wall import InvisibleWall
 from turret import Turret
 from adstop import AdStop
 
-
 import cocos.collision_model as cm
-import cocos.euclid as eu
-import math
 
 CURRENT_TMX = None  # Holds the tmx that loads the map
 CURRENT_WALL_ARRAY = None  # Holds only the objects representing the deadly walls
@@ -112,11 +109,9 @@ class Game(cocos.layer.ScrollableLayer):
         BACKGROUND_RECT = self.background.get_rect()
         offset = BACKGROUND_RECT.width/2, BACKGROUND_RECT.height/2
         load_wall_array()
+
         global SPAWN
-        self.cursor = Cursor(
-            "res/cursor.png",
-            SPAWN
-        )
+        self.cursor = Cursor(SPAWN)
         ##
 
         self.background.position = offset
@@ -124,18 +119,10 @@ class Game(cocos.layer.ScrollableLayer):
         spawn_delayed([self], [self.cursor])
         self.add(self.background)
 
-        self.adstop = AdStop(
-            "res/stop.png",
-            (self.cursor.position[0] - director.get_window_size()[0] / 2 + 20,
-             self.cursor.position[1] + director.get_window_size()[1] / 2 - 20),
-            self.cursor
-        )
+        self.adstop = AdStop(self.cursor)
         self.add(self.adstop)
 
-        self.bullettime = BulletTime(
-            "res/bullet_time.png",
-            self.cursor
-        )
+        self.bullettime = BulletTime(self.cursor)
         self.add(self.bullettime)
 
         self.add(self.cursor)
