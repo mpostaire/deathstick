@@ -15,12 +15,12 @@
   <object id="12" name="lose" x="153.08" y="456.225" width="248.85" height="75.4091"/>
   <object id="13" name="lose" x="598.748" y="456.979" width="104.065" height="118.392"/>
   <object id="14" name="win:end" x="1034.21" y="836.451" width="196.419" height="121.593"/>
-  <object id="15" name="turret:I:0.25:2000:350:10" x="627.01" y="195.941" width="25.1206" height="50.2412"/>
+  <object id="15" name="turret:I:0.25:2000:350:10:3" x="627.01" y="195.941" width="25.1206" height="50.2412"/>
   <object id="16" name="spawn:90" x="453.387" y="450.779" width="27.1467" height="34.2284"/>
   <object id="19" name="lose" x="1.77999" y="0" width="1286.93" height="8.89996"/>
   <object id="20" name="lose" x="1276.25" y="5.33998" width="8.89996" height="1025.28"/>
   <object id="21" name="lose" x="-5.33998" y="1016.38" width="1286.93" height="7.11997"/>
   <object id="22" name="lose" x="-5.33998" y="-3.55999" width="8.89996" height="1035.96"/>
-  <object id="24" name="turret:o:1:2000:150:10" x="648.32" y="472.733" width="23.6367" height="42.2083"/>
+  <object id="24" name="turret:o:1:2000:150:10:4" x="648.32" y="472.733" width="23.6367" height="42.2083"/>
  </objectgroup>
 </map>

@@ -4,12 +4,12 @@ import cocos.euclid as eu
 
 
 class Cursor(cocos.sprite.Sprite):
-    def __init__(self, image, center_x, center_y, angle):
+    def __init__(self, image, spawn_coords):
         super(Cursor, self).__init__(image)
         self.speed = 200
         self.angular_speed = 150
-        self.rotation = angle
-        self.position = (center_x, center_y)
+        self.rotation = spawn_coords[2]
+        self.position = (spawn_coords[0], spawn_coords[1])
         self.shielded = False
         self.bullettime = False
         self.update_cshape()
@@ -36,7 +36,6 @@ class Cursor(cocos.sprite.Sprite):
         self.x = self.x + delta * self.vec_speed.x
         self.y = self.y + delta * self.vec_speed.y
         self.update_cshape()
-
 
     def get_rect(self):
         return cocos.rect.Rect(self.x - self.width/2, self.y - self.width/2, self.width, self.height)

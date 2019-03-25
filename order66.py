@@ -80,6 +80,7 @@ def load_wall_array():
                         float(split[4]),
                         split[1],
                         float(split[5]),
+                        int(split[6])
                     )
             )
         CURRENT_WALL_ARRAY.append(wall)
@@ -112,7 +113,7 @@ class Game(cocos.layer.ScrollableLayer):
         global SPAWN
         self.cursor = Cursor(
             "res/cursor.png",
-            SPAWN[0], SPAWN[1], SPAWN[2]
+            SPAWN
         )
         ##
 

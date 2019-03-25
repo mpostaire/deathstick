@@ -16,7 +16,7 @@ class Projectile(Label):
         super(Label, self).__init__(
             char,
             font_name='Times New Roman',
-            color=(0, 0, 255, 255),
+            color=(255, 0, 0, 255),
             font_size=self.size,
             anchor_x='center', anchor_y='center',
             bold=True
@@ -41,7 +41,11 @@ class Projectile(Label):
         vec_center = eu.Vector2(self.x,
                                 self.y,
                                 )
-        self.cshape = cocos.collision_model.AARectShape(vec_center, half_width=self.size / 2, half_height=self.size / 2)
+        self.cshape = cocos.collision_model.AARectShape(
+                        vec_center,
+                        half_width=self.size / 2,
+                        half_height=self.size / 2
+                    )
 
 
     def update(self, delta):
