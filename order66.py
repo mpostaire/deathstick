@@ -22,33 +22,33 @@ import cocos.collision_model as cm
 import cocos.euclid as eu
 import math
 
-CURRENT_TMX = None #Holds the tmx that loads the map
-CURRENT_WALL_ARRAY = None #Holds only the objects representing the deadly walls
-THE_ELDER_SCROLLS_MANAGER = None #funny name for the scrolling manager
-DELAYED_ARRAY = None#holds the objects that need a layer and cursor instance to be fully operational
-BACKGROUND_RECT = None #background dimensions
-COL_MGR = None#collision manager
-SPAWN = [0, 0]#default spawn position
+CURRENT_TMX = None  # Holds the tmx that loads the map
+CURRENT_WALL_ARRAY = None  # Holds only the objects representing the deadly walls
+THE_ELDER_SCROLLS_MANAGER = None  # funny name for the scrolling manager
+DELAYED_ARRAY = None  # holds the objects that need a layer and cursor instance to be fully operational
+BACKGROUND_RECT = None  # background dimensions
+COL_MGR = None  # collision manager
+SPAWN = [0, 0]  # default spawn position
 
-#helper function
+# helper function
 def get_path(file):
     return os.path.join(
         os.path.dirname(__file__),
         file)
 
-#loads tmx from file and replace current_tmx
+# loads tmx from file and replace current_tmx
 def load_tmx(map_string):
     global CURRENT_TMX
     CURRENT_TMX = pytmx.TiledMap(map_string)
 
-#gets the background path from the tmx's data
+# gets the background path from the tmx's data
 def get_background_path():
     global CURRENT_TMX
     print(CURRENT_TMX.get_tile_image_by_gid(1)[0])
     return CURRENT_TMX.get_tile_image_by_gid(1)[0]
 
-#extract the deadly invisible walls from the tmx
-#and loads a lot of the other entities on the map
+# extract the deadly invisible walls from the tmx
+# and loads a lot of the other entities on the map
 def load_wall_array():
     global CURRENT_WALL_ARRAY
     global CURRENT_TMX
@@ -65,13 +65,13 @@ def load_wall_array():
 
         rect = cocos.rect.Rect(object.x, bottom_left_y, object.width, object.height)
         wall = InvisibleWall(rect, object.name)#?
-        #guessing the type of the parsed game entity
+        # guessing the type of the parsed game entity
         split = wall.name.split(":")
         if split[0] == "spawn":
-            #it's a spawn point
+            # it's a spawn point
             SPAWN = [bottom_left_x, bottom_left_y, float(split[1])]
         elif split[0] == "turret":
-            print(split) #pos, delay, dist, speed, ammo
+            print(split)  # pos, delay, dist, speed, ammo
             DELAYED_ARRAY.append(
                 Turret(
                         (bottom_left_x, bottom_left_y),
@@ -98,6 +98,8 @@ class Game(cocos.layer.ScrollableLayer):
     def __init__(self, name):
         super(Game, self).__init__()
 
+        self.name = name
+
         self.keys_pressed = set()
 
         self.projectiles = list()
@@ -105,7 +107,7 @@ class Game(cocos.layer.ScrollableLayer):
         self.background = Sprite(
             image=get_background_path()
         )
-        #à cacher
+        # à cacher
         global BACKGROUND_RECT
         BACKGROUND_RECT = self.background.get_rect()
         offset = BACKGROUND_RECT.width/2, BACKGROUND_RECT.height/2
@@ -139,7 +141,7 @@ class Game(cocos.layer.ScrollableLayer):
         self.add(self.cursor)
 
 
-        #adding stuff to the collision world
+        # adding stuff to the collision world
         global COL_MGR
         COL_MGR = cocos.collision_model.CollisionManagerGrid(
             BACKGROUND_RECT.x + BACKGROUND_RECT.width/2,
@@ -152,18 +154,18 @@ class Game(cocos.layer.ScrollableLayer):
 
         # self.debug()
         self.schedule(self.update)
-    #used to draw collisions boxes etc
+    # used to draw collisions boxes etc
     def debug(self):
         global CURRENT_WALL_ARRAY
         for rect in CURRENT_WALL_ARRAY:
             draw_rect(rect.rect, self)
 
         draw_rect(self.cursor.get_rect(), self)
-    #holds logic
+    # holds logic
     def update(self, delta):
         if self.cursor.bullettime:
             delta *= 0.5
-        #reacting to keypresses
+        # reacting to keypresses
         for k in self.keys_pressed:
             if k == key.LEFT:
                 self.cursor.do(RotateBy(-self.cursor.angular_speed * delta, 0))
@@ -183,8 +185,8 @@ class Game(cocos.layer.ScrollableLayer):
         global CURRENT_WALL_ARRAY
         global DELAYED_ARRAY
 
-        COL_MGR.clear()# fast, no leaks even if changed cshapes
-        COL_MGR.add(self.cursor)#it's the way internet says it has to be done
+        COL_MGR.clear()  # fast, no leaks even if changed cshapes
+        COL_MGR.add(self.cursor)  # it's the way internet says it has to be done
         for delayed in DELAYED_ARRAY:
             delayed.update(delta)
             if type(delayed) == Turret:
@@ -210,7 +212,8 @@ class Game(cocos.layer.ScrollableLayer):
                     continue
                 else:
                     print("you lost")
-                    sys.exit(0)
+                    run_level(self.name)
+                    break
             split = other.name.split(":")
             if split[0] == "win":
                 print("you win")
@@ -218,22 +221,15 @@ class Game(cocos.layer.ScrollableLayer):
                     print("Java c'est plus meilleur.")
                     sys.exit(0)
                 else:
-                    self.changelevel(split[1])
+                    run_level(split[1])
+                    break
             elif split[0] == "lose":
                 print("you lost")
-                sys.exit(0)
+                run_level(self.name)
+                break
 
         global THE_ELDER_SCROLLS_MANAGER
         THE_ELDER_SCROLLS_MANAGER.set_focus(self.cursor.position[0], self.cursor.position[1])
-
-    def changelevel(self, name):
-        print(name)
-        load_tmx("res/"+name+"/map.tmx")
-        global THE_ELDER_SCROLLS_MANAGER
-        THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
-        THE_ELDER_SCROLLS_MANAGER.add(Game(name))
-        main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
-        director.replace(main_scene)
 
     def on_key_press(self, key, modifiers):
         self.keys_pressed.add(key)
@@ -245,14 +241,23 @@ class Game(cocos.layer.ScrollableLayer):
             print('tried to remove a key during level change !')
 
 
-
-if __name__ == '__main__':
-    director.init(width=800, height=600)
-    #setting up the map
-    load_tmx("res/level01/map.tmx")
+def run_level(name):
+    print(name)
+    load_tmx("res/"+name+"/map.tmx")
+    global THE_ELDER_SCROLLS_MANAGER
     THE_ELDER_SCROLLS_MANAGER = cocos.layer.ScrollingManager()
-    THE_ELDER_SCROLLS_MANAGER.scale = 0.8
-    game = Game("")
-    THE_ELDER_SCROLLS_MANAGER.add(game)
+    THE_ELDER_SCROLLS_MANAGER.add(Game(name))
     main_scene = Scene(THE_ELDER_SCROLLS_MANAGER)
     director.run(main_scene)
+
+
+if __name__ == '__main__':
+    director.init(
+        caption="PyCon",
+        width=800,
+        height=600,
+        resizable=True,
+        autoscale=True
+    )
+    #setting up the map
+    run_level("level01")
