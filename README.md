@@ -1,5 +1,5 @@
 # Pycon
-Louvain-li-nux's Game jam 2.0 submission
+Louvain-li-Nux's Game jam 2.0 submission
 
 To launch the game, open a terminal in the game folder and execute `python order66.py`
 
