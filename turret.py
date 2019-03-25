@@ -8,6 +8,11 @@ import cocos.collision_model
 from projectile import Projectile
 import cocos.euclid as eu
 
+
+def predict_pos(vec_orig, speed_mag, vec_pos, vec_dir, delta, epsilon):
+    return
+
+
 class Turret():
 
     def __init__(self, pos, delay, dist, speed, ammo_type, bullet_len ):

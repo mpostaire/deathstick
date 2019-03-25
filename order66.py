@@ -173,10 +173,7 @@ class Game(cocos.layer.ScrollableLayer):
             if k == key.B:
                 self.bullettime.activate()
 
-        x = (self.cursor.speed * delta) * math.sin(math.radians(self.cursor.rotation))
-        y = (self.cursor.speed * delta) * math.cos(math.radians(self.cursor.rotation))
-        self.cursor.position = self.cursor.position[0] + x, self.cursor.position[1] + y
-        self.cursor.update_cshape()
+        self.cursor.update(delta)
 
         self.adstop.act(delta)
         self.bullettime.act(delta)
