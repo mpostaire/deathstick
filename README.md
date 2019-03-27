@@ -11,7 +11,7 @@ To launch the game, open a terminal in the game folder and execute `python order
 - cocos2d
 - pytmx
 
-## Modding API
+## Custom map creation
 You can make your custom made map. 
 It's very easy just let me introduce you to our **beautiful** work.
 
